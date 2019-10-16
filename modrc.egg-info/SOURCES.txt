@@ -1,0 +1,12 @@
+README.md
+setup.py
+modrc/__init__.py
+modrc/__main__.py
+modrc.egg-info/PKG-INFO
+modrc.egg-info/SOURCES.txt
+modrc.egg-info/dependency_links.txt
+modrc.egg-info/entry_points.txt
+modrc.egg-info/requires.txt
+modrc.egg-info/top_level.txt
+modrc/commands/__init__.py
+modrc/commands/ping.py
