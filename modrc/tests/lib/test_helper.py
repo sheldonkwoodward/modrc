@@ -30,7 +30,7 @@ class TestVerifyModRCDir(unittest.TestCase):
 
     def test_success(self):
         """Tests that the ModRC directory is valid at a given path."""
-        modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.parent_dir)
         self.assertTrue(helper.verify_modrc_dir(modrc_dir))
 
 
@@ -66,7 +66,7 @@ class TestGetPackagesDir(unittest.TestCase):
 
     def test_success(self):
         """Tests that the path for the packages directory is retrieved successfully."""
-        modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.parent_dir)
         packages_dir = modrc_dir.joinpath('packages')
         self.assertEqual(packages_dir, helper.get_packages_dir(modrc_dir))
 
@@ -103,6 +103,6 @@ class TestGetLiveDir(unittest.TestCase):
 
     def test_success(self):
         """Tests that the path for the live directory is retrieved successfully."""
-        modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.parent_dir)
         live_dir = modrc_dir.joinpath('live')
         self.assertEqual(live_dir, helper.get_live_dir(modrc_dir))

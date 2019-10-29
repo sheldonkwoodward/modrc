@@ -10,7 +10,7 @@ class TestCreatePackage(unittest.TestCase):
         # setup a temporary mock home directory
         self.temp = tempfile.TemporaryDirectory()
         self.parent_dir = pathlib.Path(self.temp.name)
-        self.modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        self.modrc_dir = setup.initial_setup(self.parent_dir)
         self.packages_dir = self.modrc_dir.joinpath('packages')
 
     def tearDown(self):

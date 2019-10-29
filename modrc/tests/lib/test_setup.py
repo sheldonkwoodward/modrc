@@ -5,7 +5,7 @@ import unittest
 from modrc.lib import setup
 
 
-class TestCreateModRCDirectory(unittest.TestCase):
+class TestInitialSetup(unittest.TestCase):
     def setUp(self):
         # setup a temporary mock home directory
         self.temp = tempfile.TemporaryDirectory()
@@ -20,35 +20,35 @@ class TestCreateModRCDirectory(unittest.TestCase):
         modrc_dir = self.parent_dir.joinpath('.modrc')
         modrc_dir.mkdir()
         with self.assertRaises(FileExistsError):
-            setup.create_modrc_directory(self.parent_dir)
+            setup.initial_setup(self.parent_dir)
 
-    def test_create_modrc_directory(self):
+    def test_initial_setup(self):
         """Test ModRC directory creation."""
-        modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.parent_dir)
         self.assertEqual(modrc_dir.name, '.modrc')
         self.assertTrue(modrc_dir.exists())
 
     def test_create_modrc_custom_directory(self):
         """Test custom modrc directory name."""
-        modrc_dir = setup.create_modrc_directory(self.parent_dir, '.custom')
+        modrc_dir = setup.initial_setup(self.parent_dir, '.custom')
         self.assertEqual(modrc_dir.name, '.custom')
         self.assertTrue(modrc_dir.exists())
 
     def test_create_modrc_file(self):
         """Test .modrc file creation"""
-        modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.parent_dir)
         modrc_file = modrc_dir.joinpath('.modrc')
         self.assertTrue(modrc_file.exists())
 
     def test_create_packages_directory(self):
         """Test package directory creation."""
-        modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.parent_dir)
         packages_dir = modrc_dir.joinpath('packages')
         self.assertTrue(packages_dir.exists())
 
     def test_create_live_directory(self):
         """Test live directory creation."""
-        modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.parent_dir)
         live_dir = modrc_dir.joinpath('live')
         self.assertTrue(live_dir.exists())
 

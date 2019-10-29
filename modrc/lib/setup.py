@@ -1,5 +1,5 @@
-def create_modrc_directory(parent_dir, modrc_dirname='.modrc'):
-    """Create the ModRC directory and its file structure.
+def initial_setup(parent_dir, modrc_dirname='.modrc'):
+    """The initial setup process for ModRC to create the ModRC directory and its file structure.
 
     Parameters
     ----------
