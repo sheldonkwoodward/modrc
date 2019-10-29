@@ -28,12 +28,6 @@ class TestInitialSetup(unittest.TestCase):
         self.assertEqual(modrc_dir.name, '.modrc')
         self.assertTrue(modrc_dir.exists())
 
-    def test_create_modrc_custom_directory(self):
-        """Test custom modrc directory name."""
-        modrc_dir = setup.initial_setup(self.parent_dir, '.custom')
-        self.assertEqual(modrc_dir.name, '.custom')
-        self.assertTrue(modrc_dir.exists())
-
     def test_create_modrc_file(self):
         """Test .modrc file creation"""
         modrc_dir = setup.initial_setup(self.parent_dir)
