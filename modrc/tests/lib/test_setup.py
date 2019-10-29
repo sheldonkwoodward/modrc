@@ -5,37 +5,50 @@ import unittest
 from modrc.lib import setup
 
 
-class TestSetup(unittest.TestCase):
+class TestCreateModRCDirectory(unittest.TestCase):
     def setUp(self):
         # setup a temporary mock home directory
         self.temp = tempfile.TemporaryDirectory()
-        self.parentdir = pathlib.Path(self.temp.name)
+        self.parent_dir = pathlib.Path(self.temp.name)
 
     def tearDown(self):
         # destroy the temp directory
         self.temp.cleanup()
 
+    def test_modrc_directory_already_exists(self):
+        """Test that exception is raised if the ModRC directory already exists."""
+        modrc_dir = self.parent_dir.joinpath('.modrc')
+        modrc_dir.mkdir()
+        with self.assertRaises(FileExistsError):
+            setup.create_modrc_directory(self.parent_dir)
+
     def test_create_modrc_directory(self):
         """Test ModRC directory creation."""
-        modrc_dir = setup.create_modrc_directory(self.parentdir)
+        modrc_dir = setup.create_modrc_directory(self.parent_dir)
         self.assertEqual(modrc_dir.name, '.modrc')
         self.assertTrue(modrc_dir.exists())
 
     def test_create_modrc_custom_directory(self):
         """Test custom modrc directory name."""
-        modrc_dir = setup.create_modrc_directory(self.parentdir, '.custom')
+        modrc_dir = setup.create_modrc_directory(self.parent_dir, '.custom')
         self.assertEqual(modrc_dir.name, '.custom')
         self.assertTrue(modrc_dir.exists())
 
-    def test_create_package_directory(self):
+    def test_create_modrc_file(self):
+        """Test .modrc file creation"""
+        modrc_dir = setup.create_modrc_directory(self.parent_dir)
+        modrc_file = modrc_dir.joinpath('.modrc')
+        self.assertTrue(modrc_file.exists())
+
+    def test_create_packages_directory(self):
         """Test package directory creation."""
-        modrc_dir = setup.create_modrc_directory(self.parentdir)
+        modrc_dir = setup.create_modrc_directory(self.parent_dir)
         packages_dir = modrc_dir.joinpath('packages')
         self.assertTrue(packages_dir.exists())
 
     def test_create_live_directory(self):
         """Test live directory creation."""
-        modrc_dir = setup.create_modrc_directory(self.parentdir)
+        modrc_dir = setup.create_modrc_directory(self.parent_dir)
         live_dir = modrc_dir.joinpath('live')
         self.assertTrue(live_dir.exists())
 
