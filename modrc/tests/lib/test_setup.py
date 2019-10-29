@@ -27,6 +27,18 @@ class TestSetup(unittest.TestCase):
         self.assertEqual(modrc_dir.name, '.custom')
         self.assertTrue(modrc_dir.exists())
 
+    def test_create_package_directory(self):
+        """Test package directory creation."""
+        modrc_dir = setup.create_modrc_directory(self.parentdir)
+        packages_dir = modrc_dir.joinpath('packages')
+        self.assertTrue(packages_dir.exists())
+
+    def test_create_live_directory(self):
+        """Test live directory creation."""
+        modrc_dir = setup.create_modrc_directory(self.parentdir)
+        live_dir = modrc_dir.joinpath('live')
+        self.assertTrue(live_dir.exists())
+
 
 # runner
 if __name__ == '__main__':
