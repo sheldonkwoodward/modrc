@@ -9,44 +9,78 @@ class TestInitialSetup(unittest.TestCase):
     def setUp(self):
         # setup a temporary mock home directory
         self.temp = tempfile.TemporaryDirectory()
-        self.parent_dir = pathlib.Path(self.temp.name)
+        self.temp_dir = pathlib.Path(self.temp.name)
 
     def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown()
         # destroy the temp directory
         self.temp.cleanup()
 
     def test_modrc_directory_already_exists(self):
         """Test that exception is raised if the ModRC directory already exists."""
-        modrc_dir = self.parent_dir.joinpath('.modrc')
+        modrc_dir = pathlib.Path('~/.modrc').expanduser()
         modrc_dir.mkdir()
         with self.assertRaises(FileExistsError):
-            setup.initial_setup(self.parent_dir)
+            setup.initial_setup(self.temp_dir)
 
     def test_initial_setup(self):
         """Test ModRC directory creation."""
-        modrc_dir = setup.initial_setup(self.parent_dir)
+        modrc_dir = setup.initial_setup()
+        self.assertEqual(modrc_dir.name, '.modrc')
+        self.assertTrue(modrc_dir.exists())
+
+    def test_initial_setup_symlink(self):
+        """Test ModRC directory creation with symlink."""
+        modrc_dir = setup.initial_setup(self.temp_dir)
         self.assertEqual(modrc_dir.name, '.modrc')
         self.assertTrue(modrc_dir.exists())
 
     def test_create_modrc_file(self):
         """Test .modrc file creation"""
-        modrc_dir = setup.initial_setup(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.temp_dir)
         modrc_file = modrc_dir.joinpath('.modrc')
         self.assertTrue(modrc_file.exists())
 
     def test_create_packages_directory(self):
         """Test package directory creation."""
-        modrc_dir = setup.initial_setup(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.temp_dir)
         packages_dir = modrc_dir.joinpath('packages')
         self.assertTrue(packages_dir.exists())
 
     def test_create_live_directory(self):
         """Test live directory creation."""
-        modrc_dir = setup.initial_setup(self.parent_dir)
+        modrc_dir = setup.initial_setup(self.temp_dir)
         live_dir = modrc_dir.joinpath('live')
         self.assertTrue(live_dir.exists())
 
 
-# runner
-if __name__ == '__main__':
-    unittest.main()
+class TestTeardown(unittest.TestCase):
+    def setUp(self):
+        # setup a temporary mock home directory
+        self.temp = tempfile.TemporaryDirectory()
+        self.temp_dir = pathlib.Path(self.temp.name)
+
+    def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown()
+        # destroy the temp directory
+        self.temp.cleanup()
+
+    def test_teardown(self):
+        """Tests that the ModRC directory is destroyed."""
+        modrc_dir = setup.initial_setup()
+        teardown = setup.teardown()
+        self.assertTrue(teardown)
+        self.assertFalse(modrc_dir.exists())
+
+    def test_teardown_symlink(self):
+        """Tests that the ModRC symlink is destroyed."""
+        modrc_dir = setup.initial_setup(self.temp_dir)
+        teardown = setup.teardown()
+        self.assertTrue(teardown)
+        self.assertFalse(modrc_dir.exists())
+
+    def test_teardown_nothing_deleted(self):
+        teardown = setup.teardown()
+        self.assertFalse(teardown)

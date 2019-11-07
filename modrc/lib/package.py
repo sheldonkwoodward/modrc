@@ -1,12 +1,10 @@
 from modrc.lib import helper
 
-def create_package(modrc_dir, package_name):
+def create_package(package_name):
     """Create a new ModRC package.
 
     Parameters
     ----------
-    modrc_dir : :obj:`Path`
-        The ModRC directory.
     package_name : str
         The name of the new package.
 
@@ -21,7 +19,7 @@ def create_package(modrc_dir, package_name):
         Raised if either the ModRC or packages directory do not exist.
     """
     # get the packges directory
-    packages_dir = helper.get_packages_dir(modrc_dir)
+    packages_dir = helper.get_packages_dir()
     # define the package directories and files
     new_package_dir = packages_dir.joinpath(package_name)
     new_package_yml = new_package_dir.joinpath('package.yml')

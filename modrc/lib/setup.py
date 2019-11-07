@@ -1,15 +1,14 @@
 import pathlib
+import shutil
 
 
-def initial_setup(parent_dir='~', symlink=False):
+def initial_setup(symlink=None):
     """The initial setup process for ModRC to create the ModRC directory and its file structure.
 
     Parameters
     ----------
-    parent_dir : :obj:`Path`
-        The directory to create the ModRC directory in.
-    modrc_dirname : str, optional
-        A custom name for the ModRC directory.
+    symlink : :obj:`Path` or None
+        The path where actual ModRC files exist that should be symlinked to.
 
     Returns
     -------
@@ -21,24 +20,42 @@ def initial_setup(parent_dir='~', symlink=False):
     FileExistsError
         Raised if the ModRC direcotory with the specified name already exists.
     """
-    # resolve the user directory
-    parent_dir = parent_dir.expanduser()
-    # create the modrc directory path
-    modrc_dir = parent_dir.joinpath('.modrc')
+    # create the modrc directory
+    modrc_dir = pathlib.Path('~/.modrc').expanduser()
+    if modrc_dir.is_dir():
+        raise FileExistsError('A ModRC directory is already here')
+    elif symlink is None:
+        modrc_dir.mkdir()
+    else:
+        modrc_dir.symlink_to(symlink.expanduser())
+    # create files in the modrc directory
     modrc_file = modrc_dir.joinpath('.modrc')
     packages_dir = modrc_dir.joinpath('packages')
     live_dir = modrc_dir.joinpath('live')
-    # create the modrc directories
-    try:
-        modrc_dir.mkdir()
-    except FileExistsError:
-        raise FileExistsError('A ModRC directory is already here')
     modrc_file.touch()
     packages_dir.mkdir()
     live_dir.mkdir()
     # symlink the ModRC directory if it is not in the user's home directory
-    home_dir = pathlib.Path('~').expanduser()
-    if symlink and parent_dir != home_dir:
-        pathlib.Path('~/.modrc').symlink_to(modrc_dir)
-    # return the path to the new modrc_dir
     return modrc_dir
+
+
+def teardown():
+    """The teardown process for ModRC to delete the ModRC directory and its file structure.
+
+    Returns
+    -------
+    bool
+        Return True if anything was deleted, False if nothing was deleted.
+    """
+    # get the ModRC directory path
+    modrc_dir = pathlib.Path('~/.modrc').expanduser()
+    # delete a symlink
+    if modrc_dir.is_symlink():
+        modrc_dir.unlink()
+        return True
+    # delete a directory
+    if modrc_dir.is_dir():
+        shutil.rmtree(modrc_dir)
+        return True
+    # nothing was deleted
+    return False
