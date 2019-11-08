@@ -2,6 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
+from modrc import exceptions
 from modrc.lib import file, helper, package, setup
 
 
@@ -36,6 +37,70 @@ class TestCreateFile(unittest.TestCase):
         file_dir = file.create_file('test-file', 'test-package')
         self.assertEqual(package_dir.joinpath('files', 'test-file'), file_dir)
         self.assertTrue(file_dir.is_dir())
+
+
+class TestGetFile(unittest.TestCase):
+    def setUp(self):
+        # setup a temporary mock home directory
+        self.temp = tempfile.TemporaryDirectory()
+        self.temp_dir = pathlib.Path(self.temp.name)
+        setup.initial_setup(self.temp_dir)
+
+    def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown()
+        # destroy the temp directory
+        self.temp.cleanup()
+
+    def test_package_does_not_exist(self):
+        """Tests that an exception is raised if the package does not exist."""
+        with self.assertRaises(FileNotFoundError):
+            file.get_file('test-file', 'test-package')
+
+    def test_file_does_not_exist(self):
+        """Tests that an exception is raised if the file does not exist."""
+        package.create_package('test-package')
+        with self.assertRaises(FileNotFoundError):
+            file.get_file('test-file', 'test-package')
+
+    def test_file_exists(self):
+        """Tests that a file is retrieved."""
+        package.create_package('test-package')
+        file_dir = file.create_file('test-file', 'test-package')
+        self.assertEqual(file_dir, file.get_file('test-file', 'test-package'))
+
+
+class TestCreateFileFilter(unittest.TestCase):
+    def setUp(self):
+        # setup a temporary mock home directory
+        self.temp = tempfile.TemporaryDirectory()
+        self.temp_dir = pathlib.Path(self.temp.name)
+        setup.initial_setup(self.temp_dir)
+
+    def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown()
+        # destroy the temp directory
+        self.temp.cleanup()
+
+    def test_package_does_not_exist(self):
+        """Test that an exception is thrown if the package does not exist."""
+        with self.assertRaises(FileNotFoundError):
+            file.create_file_filter('global', 'test-file', 'test-package')
+
+    def test_file_does_not_exist(self):
+        """Test that an exception is thrown if the file does not exist."""
+        package.create_package('test-package')
+        with self.assertRaises(FileNotFoundError):
+            file.create_file_filter('global', 'test-file', 'test-package')
+
+    def test_create_file_filter_success(self):
+        """Test that a file filter is created."""
+        package.create_package('test-package')
+        file_dir = file.create_file('test-file', 'test-package')
+        file_filter = file.create_file_filter('global', 'test-file', 'test-package')
+        self.assertEqual(file_filter, file_dir.joinpath('global'))
+        self.assertTrue(file_filter.exists())
 
 
 class TestCompileFile(unittest.TestCase):
