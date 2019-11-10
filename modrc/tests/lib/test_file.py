@@ -2,6 +2,8 @@ import pathlib
 import tempfile
 import unittest
 
+from parameterized import parameterized
+
 from modrc import exceptions
 from modrc.lib import file, helper, package, setup
 
@@ -94,13 +96,6 @@ class TestCreateFileFilter(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             file.create_file_filter('global', 'test-file', 'test-package')
 
-    def test_validate_filter_name(self):
-        """Tests that an exception is thrown if the filter name is invalid"""
-        package.create_package('test-package')
-        file.create_file('test-file', 'test-package')
-        with self.assertRaises(exceptions.FilterNameError):
-            file.create_file_filter('bad', 'test-file', 'test-package')
-
     def test_create_file_filter_success(self):
         """Test that a file filter is created."""
         package.create_package('test-package')
@@ -108,6 +103,13 @@ class TestCreateFileFilter(unittest.TestCase):
         file_filter = file.create_file_filter('global', 'test-file', 'test-package')
         self.assertEqual(file_filter, file_dir.joinpath('global'))
         self.assertTrue(file_filter.exists())
+
+    def test_validate_filter_name(self):
+        """Tests that an exception is thrown if the filter name is invalid"""
+        package.create_package('test-package')
+        file.create_file('test-file', 'test-package')
+        with self.assertRaises(exceptions.FilterNameError):
+            file.create_file_filter('bad', 'test-file', 'test-package')
 
 
 class TestCompileFile(unittest.TestCase):
@@ -128,7 +130,58 @@ class TestCompileFile(unittest.TestCase):
     def test_file_does_not_exist(self):
         """Tests that an error is thrown if the file does not exist."""
         with self.assertRaises(FileNotFoundError):
-            file.compile_file('test-file', 'test-package')
+            file.compile_file('test-file', 'macos', 'test-package')
+
+    @parameterized.expand([
+        ('macos.10.15.1'),
+        ('linux.ubuntu.18.04.3')
+    ])
+    def test_global_file_compile(self, system):
+        """Test that the global filter is compiled for macOS and Linux."""
+        file.create_file('test-file', 'test-package')
+        # create the file filter with content and compile it
+        file_filter = file.create_file_filter('global', 'test-file', 'test-package')
+        with open(file_filter, 'w') as ff:
+            ff.write('GLOBAL CONTENT')
+        compiled_file = file.compile_file('test-file', system, 'test-package')
+        # check the file
+        self.assertTrue(compiled_file.is_file())
+        self.assertEqual(compiled_file, helper.get_live_dir().joinpath('test-file'))
+        with open(str(file_filter)) as ff, open(str(compiled_file), 'r') as cf:
+            self.assertEqual(ff.readlines(), cf.readlines())
+
+    @parameterized.expand([
+        ('macos.10.15.1'),
+        ('linux.ubuntu.18.04.3')
+    ])
+    def test_exclusive_file_compilation(self, system):
+        """Test that the only the right OS filter is compiled."""
+        file.create_file('test-file', 'test-package')
+        # create the file filters swith content and compile them
+        file_filter_macos = file.create_file_filter('macos', 'test-file', 'test-package')
+        with open(file_filter_macos, 'w') as ff:
+            ff.write('MACOS CONTENT')
+        file_filter_linux = file.create_file_filter('linux', 'test-file', 'test-package')
+        with open(file_filter_linux, 'w') as ff:
+            ff.write('LINUX CONTENT')
+        compiled_file = file.compile_file('test-file', system, 'test-package')
+        # check the file
+        self.assertTrue(compiled_file.is_file())
+        self.assertEqual(compiled_file, helper.get_live_dir().joinpath('test-file'))
+        if system[0:5] == 'macos':
+            system_file_filter = file_filter_macos
+        else:
+            system_file_filter = file_filter_linux
+        with open(str(system_file_filter)) as sff, open(str(compiled_file), 'r') as cf:
+            self.assertEqual(sff.readlines(), cf.readlines())
+
+    # TODO: overwrite compiled file test
+
+    # TODO: test filter scoping presedence
+
+    # TODO: test no file compiled if there are no filters
+
+    # TODO: test compile MAC address filter
 
 
 class TestGetLiveFile(unittest.TestCase):

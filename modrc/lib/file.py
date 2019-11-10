@@ -105,13 +105,15 @@ def create_file_filter(filter_name, file_name, package_name):
     file_filter.touch()
     return file_filter
 
-def compile_file(file_name, package_name):
+def compile_file(file_name, system, package_name):
     """Compile a given file from a package.
 
     Parameters
     ----------
     file_name : str
         The name of the file to compile.
+    system : str
+        The version string for the system, same format as filter names.
     package_name : str
         The name of the package that the file is in.
 
@@ -125,7 +127,25 @@ def compile_file(file_name, package_name):
     FileNotFoundError
         Raised if the file or package could not be found.
     """
-    raise FileNotFoundError('File does not exist')
+    # try to get the file
+    try:
+        file_dir = get_file(file_name, package_name)
+    except FileNotFoundError:
+        raise FileNotFoundError('Package or file does not exist')
+    # create the compiled file
+    compiled_file = helper.get_live_dir().joinpath(file_name)
+    compiled_file.touch()
+    # iterate over all file filters and write their contents to the compiled file
+    for file_filter in file_dir.iterdir():
+        # skip files that do not match part of the system string
+        if str(file_filter.name) != 'global' and system.find(str(file_filter.name)) != 0:
+            continue
+        # concatenate the filter to the end of the compiled file
+        with open(str(compiled_file), 'a') as cf, open(str(file_filter), 'r') as ff:
+            for line in ff.readlines():
+                cf.write(line)
+    # return the path to the compiled file
+    return compiled_file
 
 def get_live_file(file_name):
     """Retrieve a live file.
