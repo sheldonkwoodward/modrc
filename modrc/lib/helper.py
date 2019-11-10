@@ -1,4 +1,5 @@
 import pathlib
+import re
 
 
 def verify_modrc_dir():
@@ -80,3 +81,30 @@ def get_live_dir():
     if not live_dir.is_dir():
         raise FileNotFoundError('Live directory does not exist')
     return live_dir
+
+def valid_filter_name(filter_name):
+    """Validate a filter name.
+
+    Parameters
+    ----------
+    filter_name
+        The filter name to validate.
+
+    Returns
+    -------
+    bool
+        Return True if the name is valid, False if invalid.
+    """
+    # explicit matching
+    if filter_name == 'global':
+        return True
+    # macos matching
+    if re.fullmatch(r'macos(\.10(\.[0-9]+){0,2})?', filter_name):
+        return True
+    # linux matching
+    if re.fullmatch(r'linux(\.[a-z]+(\.[0-9]+)*)?', filter_name):
+        return True
+    # MAC address matching
+    if re.fullmatch(r'[0-9a-f]{12}', filter_name):
+        return True
+    return False

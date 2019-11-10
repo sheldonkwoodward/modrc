@@ -94,6 +94,13 @@ class TestCreateFileFilter(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             file.create_file_filter('global', 'test-file', 'test-package')
 
+    def test_validate_filter_name(self):
+        """Tests that an exception is thrown if the filter name is invalid"""
+        package.create_package('test-package')
+        file.create_file('test-file', 'test-package')
+        with self.assertRaises(exceptions.FilterNameError):
+            file.create_file_filter('bad', 'test-file', 'test-package')
+
     def test_create_file_filter_success(self):
         """Test that a file filter is created."""
         package.create_package('test-package')

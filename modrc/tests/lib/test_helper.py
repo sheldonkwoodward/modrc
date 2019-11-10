@@ -2,6 +2,8 @@ import pathlib
 import tempfile
 import unittest
 
+from parameterized import parameterized
+
 from modrc.lib import helper, setup
 
 
@@ -55,6 +57,7 @@ class TestGetModRCDir(unittest.TestCase):
         modrc_dir = setup.initial_setup(self.temp_dir)
         self.assertEqual(modrc_dir, helper.get_modrc_dir())
 
+
 class TestGetPackagesDir(unittest.TestCase):
     def setUp(self):
         # setup a temporary mock home directory
@@ -93,6 +96,7 @@ class TestGetPackagesDir(unittest.TestCase):
         packages_dir = modrc_dir.joinpath('packages')
         self.assertEqual(packages_dir, helper.get_packages_dir())
 
+
 class TestGetLiveDir(unittest.TestCase):
     def setUp(self):
         # setup a temporary mock home directory
@@ -130,3 +134,92 @@ class TestGetLiveDir(unittest.TestCase):
         modrc_dir = setup.initial_setup(self.temp_dir)
         live_dir = modrc_dir.joinpath('live')
         self.assertEqual(live_dir, helper.get_live_dir())
+
+
+class TestValidFilterName(unittest.TestCase):
+    @parameterized.expand([
+        ('global')
+    ])
+    def test_valid(self, filter_name):
+        """Test generally valid filter names."""
+        self.assertTrue(helper.valid_filter_name(filter_name))
+
+    @parameterized.expand([
+        (''),
+        ('random'),
+        ('.global'),
+        ('global.'),
+        ('.global.')
+    ])
+    def test_invalid(self, filter_name):
+        """Test generally invalid filter names."""
+        self.assertFalse(helper.valid_filter_name(filter_name))
+
+    @parameterized.expand([
+        ('macos'),
+        ('macos.10'),
+        ('macos.10.10'),
+        ('macos.10.20'),
+        ('macos.10.20.0'),
+        ('macos.10.20.5')
+    ])
+    def test_macos_valid(self, filter_name):
+        """Test macOS valid filter names."""
+        self.assertTrue(helper.valid_filter_name(filter_name))
+
+    @parameterized.expand([
+        ('macos.9'),
+        ('macos.11'),
+        ('macos.9.0'),
+        ('macos.11.0'),
+        ('macos.9.0.0'),
+        ('macos.11.0.0'),
+        ('macos.10.0.0.0'),
+        ('macos.10.a'),
+        ('macos.10.1.b'),
+        ('macos.10.1.2.c')
+    ])
+    def test_macos_invalid(self, filter_name):
+        """Test macOS invalid filter names."""
+        self.assertFalse(helper.valid_filter_name(filter_name))
+
+    @parameterized.expand([
+        ('linux'),
+        ('linux.distro'),
+        ('linux.distro.10'),
+        ('linux.distro.8.17'),
+        ('linux.distro.3.72.31')
+    ])
+    def test_linux_valid(self, filter_name):
+        """Test linux valid filter names."""
+        self.assertTrue(helper.valid_filter_name(filter_name))
+
+    @parameterized.expand([
+        ('linux.4'),
+        ('linux.32.7'),
+        ('linux.2.99.67')
+    ])
+    def test_linux_invalid(self, filter_name):
+        """Test linux invalid filter names."""
+        self.assertFalse(helper.valid_filter_name(filter_name))
+
+    @parameterized.expand([
+        ('d70751763e70'),
+        ('fd8c03658fa4'),
+        ('22f93c7e100d')
+    ])
+    def test_mac_address_valid(self, mac_address):
+        """Test valid MAC addresses."""
+        self.assertTrue(helper.valid_filter_name(mac_address))
+
+    @parameterized.expand([
+        ('AAAAAAAAAAAA'),
+        ('aa:aa:aa:aa:aa'),
+        ('aa-aa-aa-aa-aa-aa'),
+        ('00000000000'),
+        ('0000000000000'),
+        ('g0000000000z')
+    ])
+    def test_mac_address_invalid(self, mac_address):
+        """Test invalid MAC addresses."""
+        self.assertFalse(helper.valid_filter_name(mac_address))

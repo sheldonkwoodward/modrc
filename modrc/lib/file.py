@@ -1,3 +1,4 @@
+from modrc import exceptions
 from modrc.lib import helper, package
 
 
@@ -96,11 +97,13 @@ def create_file_filter(filter_name, file_name, package_name):
         file_dir = get_file(file_name, package_name)
     except FileNotFoundError:
         raise FileNotFoundError('Package or file does not exist')
+    # validate file filter name
+    if not helper.valid_filter_name(filter_name):
+        raise exceptions.FilterNameError('Invalid file filter name')
     # create the file filter
     file_filter = file_dir.joinpath(filter_name)
     file_filter.touch()
     return file_filter
-
 
 def compile_file(file_name, package_name):
     """Compile a given file from a package.
