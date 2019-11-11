@@ -1,2 +1,7 @@
+# package dependencies
 click
 clint
+distro
+
+# dev dependencies
+parameterized
