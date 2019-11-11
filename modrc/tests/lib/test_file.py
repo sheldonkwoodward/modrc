@@ -141,7 +141,7 @@ class TestCompileFile(unittest.TestCase):
         file.create_file('test-file', 'test-package')
         # create the file filter with content and compile it
         file_filter = file.create_file_filter('global', 'test-file', 'test-package')
-        with open(file_filter, 'w') as ff:
+        with open(str(file_filter), 'w') as ff:
             ff.write('GLOBAL CONTENT')
         compiled_file = file.compile_file('test-file', system, 'test-package')
         # check the file
@@ -159,10 +159,10 @@ class TestCompileFile(unittest.TestCase):
         file.create_file('test-file', 'test-package')
         # create the file filters swith content and compile them
         file_filter_macos = file.create_file_filter('macos', 'test-file', 'test-package')
-        with open(file_filter_macos, 'w') as ff:
+        with open(str(file_filter_macos), 'w') as ff:
             ff.write('MACOS CONTENT')
         file_filter_linux = file.create_file_filter('linux', 'test-file', 'test-package')
-        with open(file_filter_linux, 'w') as ff:
+        with open(str(file_filter_linux), 'w') as ff:
             ff.write('LINUX CONTENT')
         compiled_file = file.compile_file('test-file', system, 'test-package')
         # check the file
