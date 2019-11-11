@@ -1,4 +1,7 @@
 # ModRC CLI
+![](https://github.com/sheldonkwoodward/modrc-cli/workflows/tests/badge.svg)
+![](https://img.shields.io/github/license/sheldonkwoodward/modrc-cli.svg)
+
 The command line interface for the ModRC shell profile management workflow. ModRC CLI makes it easy to install, manage, and sync your shell profile across all your computer.
 
 # Installation
