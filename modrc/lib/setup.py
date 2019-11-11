@@ -55,7 +55,7 @@ def teardown():
         return True
     # delete a directory
     if modrc_dir.is_dir():
-        shutil.rmtree(modrc_dir)
+        shutil.rmtree(str(modrc_dir))
         return True
     # nothing was deleted
     return False
