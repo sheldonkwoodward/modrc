@@ -1,3 +1,0 @@
-[console_scripts]
-modrc = modrc.__main__:main
-

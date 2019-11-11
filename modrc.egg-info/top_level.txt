@@ -1,2 +1,0 @@
-modrc
-modrc/commands
