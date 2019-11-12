@@ -4,8 +4,8 @@
 """Setup file."""
 
 
-from setuptools import setup
 from os.path import abspath, dirname, join
+from setuptools import setup
 
 from modrc import __version__
 
