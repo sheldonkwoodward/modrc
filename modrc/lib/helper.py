@@ -1,6 +1,8 @@
 import pathlib
 import re
 
+from modrc import exceptions
+
 
 def verify_modrc_dir():
     """Verify that the ModRC directory exist and is valid.
@@ -12,17 +14,17 @@ def verify_modrc_dir():
 
     Raises
     ------
-    FileNotFoundError
+    ModRCIntegrityError
         Raised if the .modrc file does not exist at the given location.
     """
     # raise an exception if the ModRC directory is not valid
     modrc_dir = pathlib.Path('~/.modrc').expanduser()
     if not modrc_dir.is_dir():
-        raise FileNotFoundError('Not a valid ModRC directory')
+        raise exceptions.ModRCIntegrityError('Not a valid ModRC directory')
     # raise an exception if the ModRC file is not valid
     modrc_file = modrc_dir.joinpath('.modrc')
     if not modrc_file.is_file():
-        raise FileNotFoundError('Not a valid ModRC directory')
+        raise exceptions.ModRCIntegrityError('Not a valid ModRC directory')
     # return True if the ModRC directory is valid
     return True
 
@@ -36,12 +38,12 @@ def get_modrc_dir():
 
     Raises
     ------
-    FileNotFoundError
+    ModRCIntegrityError
         Raised if the ModRC directory could not be found automatically.
     """
     modrc_dir = pathlib.Path('~/.modrc').expanduser()
     if not verify_modrc_dir():
-        raise FileNotFoundError('The ModRC directory could not be found')
+        raise exceptions.ModRCIntegrityError('The ModRC directory could not be found')
     return modrc_dir
 
 def get_packages_dir():
@@ -54,13 +56,13 @@ def get_packages_dir():
 
     Raises
     ------
-    FileNotFoundException
+    ModRCIntegrityError
         Raised if the ModRC directory is invalid or the packages directory does not exist in it.
     """
     verify_modrc_dir()
     packages_dir = pathlib.Path('~/.modrc/packages').expanduser()
     if not packages_dir.is_dir():
-        raise FileNotFoundError('Packages directory does not exist')
+        raise exceptions.ModRCIntegrityError('Packages directory does not exist')
     return packages_dir
 
 def get_live_dir():
@@ -73,13 +75,13 @@ def get_live_dir():
 
     Raises
     ------
-    FileNotFoundException
+    ModRCIntegrityError
         Raised if the ModRC directory is invalid or the live directory does not exist in it.
     """
     verify_modrc_dir()
     live_dir = pathlib.Path('~/.modrc/live').expanduser()
     if not live_dir.is_dir():
-        raise FileNotFoundError('Live directory does not exist')
+        raise exceptions.ModRCIntegrityError('Live directory does not exist')
     return live_dir
 
 def valid_filter_name(filter_name):

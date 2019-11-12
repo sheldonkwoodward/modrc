@@ -4,12 +4,36 @@ class ModRCError(Exception):
     pass
 
 
-class CompileError(ModRCError):
-    """Base class for compile errors."""
+class ModRCIntegrityError(ModRCError):
+    """Raised when there is an error with the ModRC installation."""
     pass
 
 
-# compile errors
-class FilterNameError(CompileError):
+class ModRCPackageExistsError(ModRCError):
+    """Raised when a package already exists."""
+    pass
+
+
+class ModRCPackageDoesNotExistError(ModRCError):
+    """Raised when a package does not exist."""
+    pass
+
+
+class ModRCFileExistsError(ModRCError):
+    """Raised when a file already exists."""
+    pass
+
+
+class ModRCFileDoesNotExistError(ModRCError):
+    """Raised when a file directory does not exist."""
+    pass
+
+
+class ModRCLiveFileDoesNotExistError(ModRCError):
+    """Raised when a live file does not exist."""
+    pass
+
+
+class FilterNameError(ModRCError):
     """Raised when there is an invalid filter name"""
     pass

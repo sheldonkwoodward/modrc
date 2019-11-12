@@ -4,6 +4,7 @@ import unittest
 
 from parameterized import parameterized
 
+from modrc import exceptions
 from modrc.lib import helper, setup
 
 
@@ -21,14 +22,14 @@ class TestVerifyModRCDir(unittest.TestCase):
 
     def test_modrc_dir_does_not_exist(self):
         """Tests that a folder does not exist at the given path."""
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCIntegrityError):
             helper.verify_modrc_dir()
 
     def test_modrc_file_does_not_exist(self):
         """Tests that the .modrc file exists at the given path."""
         modrc_dir = pathlib.Path('~/.modrc').expanduser()
         modrc_dir.mkdir()
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCIntegrityError):
             helper.verify_modrc_dir()
 
     def test_success(self):
@@ -50,7 +51,7 @@ class TestGetModRCDir(unittest.TestCase):
         self.temp.cleanup()
 
     def test_does_not_exist(self):
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCIntegrityError):
             helper.get_modrc_dir()
 
     def test_symlinked(self):
@@ -71,23 +72,23 @@ class TestGetPackagesDir(unittest.TestCase):
         self.temp.cleanup()
 
     def test_invalid_modrc_dir(self):
-        """Tests that a FileNotFoundError is raised for an invalid ModRC directory."""
+        """Tests that a exceptions.ModRCIntegrityError is raised for an invalid ModRC directory."""
         # create a path for a non-existant ModRC directory
         modrc_dir = self.temp_dir.joinpath('.modrc')
         modrc_dir.mkdir()
         # test that an exception is raised
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCIntegrityError):
             helper.get_packages_dir()
 
     def test_packages_dir_does_not_exist(self):
-        """Tests that a FileNotFoundError is raised if the packages directory does not exist."""
+        """Tests that a exceptions.ModRCIntegrityError is raised if the packages directory does not exist."""
         # setup the ModRC directory without a packages directory
         modrc_dir = self.temp_dir.joinpath('.modrc')
         modrc_file = modrc_dir.joinpath('.modrc')
         modrc_dir.mkdir()
         modrc_file.touch()
         # test that an exception is raised
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCIntegrityError):
             helper.get_packages_dir()
 
     def test_success(self):
@@ -110,23 +111,23 @@ class TestGetLiveDir(unittest.TestCase):
         self.temp.cleanup()
 
     def test_invalid_modrc_dir(self):
-        """Tests that a FileNotFoundError is raised for an invalid ModRC directory."""
+        """Tests that a exceptions.ModRCIntegrityError is raised for an invalid ModRC directory."""
         # create a path for a non-existant ModRC directory
         modrc_dir = self.temp_dir.joinpath('.modrc')
         modrc_dir.mkdir()
         # test that an exception is raised
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCIntegrityError):
             helper.get_live_dir()
 
     def test_live_dir_does_not_exist(self):
-        """Tests that a FileNotFoundError is raised if the live directory does not exist."""
+        """Tests that a exceptions.ModRCIntegrityError is raised if the live directory does not exist."""
         # setup the ModRC directory without a live directory
         modrc_dir = self.temp_dir.joinpath('.modrc')
         modrc_file = modrc_dir.joinpath('.modrc')
         modrc_dir.mkdir()
         modrc_file.touch()
         # test that an exception is raised
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCIntegrityError):
             helper.get_live_dir()
 
     def test_success(self):

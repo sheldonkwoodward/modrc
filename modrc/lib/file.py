@@ -19,20 +19,19 @@ def create_file(file_name, package_name):
 
     Raises
     ------
-    FileNotFoundError
+    ModRCIntegrityError
+        Raised if ModRC is not installed properly.
+    ModRCPackageDoesNotExistError
         Raised if the package could not be found.
-    FileExistsError
+    ModRCFileExistsError
         Raised if the file already exists in the package.
     """
     # try to get the package
-    try:
-        package_dir = package.get_package(package_name)
-    except FileNotFoundError:
-        raise FileNotFoundError('Package does not exist')
+    package_dir = package.get_package(package_name)
     # check if the file already exists
     file_dir = package_dir.joinpath('files', file_name)
     if file_dir.is_dir():
-        raise FileExistsError('File already exists')
+        raise exceptions.ModRCFileExistsError('File already exists')
     # create the file dir
     file_dir.mkdir(parents=True)
     return file_dir
@@ -54,18 +53,19 @@ def get_file(file_name, package_name):
 
     Raises
     ------
-    FileNotFoundError
+    ModRCIntegrityError
+        Raised if ModRC is not installed properly.
+    ModRCPackageDoesNotExistError
+        Raised if the package could not be found.
+    ModRCFileDoesNotExistError
         Raised if the file of package is not found.
     """
     # try to get the package directory
-    try:
-        package_dir = package.get_package(package_name)
-    except FileNotFoundError:
-        raise FileNotFoundError('Package does not exist')
+    package_dir = package.get_package(package_name)
     # try to the file directory
     file_dir = package_dir.joinpath('files', file_name)
     if not file_dir.is_dir():
-        raise FileNotFoundError('File does not exist')
+        raise exceptions.ModRCFileDoesNotExistError('File does not exist')
     return file_dir
 
 def create_file_filter(filter_name, file_name, package_name):
@@ -87,16 +87,17 @@ def create_file_filter(filter_name, file_name, package_name):
 
     Raises
     ------
-    FileNotFoundError
+    ModRCIntegrityError
+        Raised if ModRC is not installed properly.
+    ModRCPackageDoesNotExistError
+        Raised if the package could not be found.
+    ModRCFileNotFoundError
         Raised if the package or file is not found.
     FilterNameError
         Raised if the filter name is invalid.
     """
     # try to get the file
-    try:
-        file_dir = get_file(file_name, package_name)
-    except FileNotFoundError:
-        raise FileNotFoundError('Package or file does not exist')
+    file_dir = get_file(file_name, package_name)
     # validate file filter name
     if not helper.valid_filter_name(filter_name):
         raise exceptions.FilterNameError('Invalid file filter name')
@@ -124,14 +125,15 @@ def compile_file(file_name, system, package_name):
 
     Raises
     ------
-    FileNotFoundError
+    ModRCIntegrityError
+        Raised if ModRC is not installed properly.
+    ModRCPackageNotFoundError
+        Raised if the package could not be found.
+    ModRCFileNotFoundError
         Raised if the file or package could not be found.
     """
     # try to get the file
-    try:
-        file_dir = get_file(file_name, package_name)
-    except FileNotFoundError:
-        raise FileNotFoundError('Package or file does not exist')
+    file_dir = get_file(file_name, package_name)
     # create the compiled file
     compiled_file = helper.get_live_dir().joinpath(file_name)
     compiled_file.touch()
@@ -162,11 +164,13 @@ def get_live_file(file_name):
 
     Raises
     ------
-    FileNotFoundError
-        Raised if the live file does not exist.
+    ModRCIntegrityError
+        Raised if ModRC is not installed properly.
+    ModRCLiveFileDoesNotExistError
+        Raised if the file or package could not be found.
     """
     # try and get the live file
     live_file = helper.get_live_dir().joinpath(file_name)
     if not live_file.is_file():
-        raise FileNotFoundError('Live file does not exist')
+        raise exceptions.ModRCLiveFileDoesNotExistError('Live file does not exist')
     return live_file

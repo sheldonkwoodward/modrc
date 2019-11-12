@@ -23,14 +23,14 @@ class TestCreateFile(unittest.TestCase):
 
     def test_package_does_not_exist(self):
         """Test that an exception is raised when the package does not exist."""
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCPackageDoesNotExistError):
             file.create_file('test-file', 'test-package')
 
     def test_file_already_exists(self):
         """Test that an exception is raised when the file already exists."""
         package_dir = package.create_package('test-package')
         package_dir.joinpath('files', 'test-file').mkdir(parents=True)
-        with self.assertRaises(FileExistsError):
+        with self.assertRaises(exceptions.ModRCFileExistsError):
             file.create_file('test-file', 'test-package')
 
     def test_create_file_success(self):
@@ -56,13 +56,13 @@ class TestGetFile(unittest.TestCase):
 
     def test_package_does_not_exist(self):
         """Tests that an exception is raised if the package does not exist."""
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCPackageDoesNotExistError):
             file.get_file('test-file', 'test-package')
 
     def test_file_does_not_exist(self):
         """Tests that an exception is raised if the file does not exist."""
         package.create_package('test-package')
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCFileDoesNotExistError):
             file.get_file('test-file', 'test-package')
 
     def test_file_exists(self):
@@ -87,13 +87,13 @@ class TestCreateFileFilter(unittest.TestCase):
 
     def test_package_does_not_exist(self):
         """Test that an exception is thrown if the package does not exist."""
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCPackageDoesNotExistError):
             file.create_file_filter('global', 'test-file', 'test-package')
 
     def test_file_does_not_exist(self):
         """Test that an exception is thrown if the file does not exist."""
         package.create_package('test-package')
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCFileDoesNotExistError):
             file.create_file_filter('global', 'test-file', 'test-package')
 
     def test_create_file_filter_success(self):
@@ -129,7 +129,7 @@ class TestCompileFile(unittest.TestCase):
 
     def test_file_does_not_exist(self):
         """Tests that an error is thrown if the file does not exist."""
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCFileDoesNotExistError):
             file.compile_file('test-file', 'macos', 'test-package')
 
     @parameterized.expand([
@@ -199,7 +199,7 @@ class TestGetLiveFile(unittest.TestCase):
 
     def test_live_file_does_not_exist(self):
         """Tests that an exception is thrown if a live file does not exist."""
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCLiveFileDoesNotExistError):
             file.get_live_file('test-file')
 
     def test_live_file_exists(self):

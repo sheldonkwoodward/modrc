@@ -1,6 +1,8 @@
 import pathlib
 import shutil
 
+from modrc import exceptions
+
 
 def initial_setup(symlink=None):
     """The initial setup process for ModRC to create the ModRC directory and its file structure.
@@ -17,13 +19,13 @@ def initial_setup(symlink=None):
 
     Raises
     ------
-    FileExistsError
+    ModRCIntegrityError
         Raised if the ModRC direcotory with the specified name already exists.
     """
     # create the modrc directory
     modrc_dir = pathlib.Path('~/.modrc').expanduser()
     if modrc_dir.is_dir():
-        raise FileExistsError('A ModRC directory is already here')
+        raise exceptions.ModRCIntegrityError('A ModRC directory is already here')
     elif symlink is None:
         modrc_dir.mkdir()
     else:

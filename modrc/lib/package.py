@@ -1,3 +1,4 @@
+from modrc import exceptions
 from modrc.lib import helper
 
 
@@ -16,7 +17,7 @@ def create_package(package_name):
 
     Raises
     ------
-    FileNotFoundError
+    ModRCIntegrityError
         Raised if either the ModRC or packages directory do not exist.
     """
     # get the packges directory
@@ -40,15 +41,17 @@ def get_package(package_name):
     Returns
     -------
     :obj:`Path`
-        The path the package
+        The path to the package
 
     Raises
     ------
-    FileNotFoundError
+    ModRCIntegrityError
+        Raised if the packages directory does not exist.
+    ModRCPackageDoesNotExistError
         Raised if the package does not exist.
     """
     packages_dir = helper.get_packages_dir()
     new_package_dir = packages_dir.joinpath(package_name)
     if not new_package_dir.is_dir():
-        raise FileNotFoundError('Package does not exist')
+        raise exceptions.ModRCPackageDoesNotExistError('Package does not exist')
     return new_package_dir

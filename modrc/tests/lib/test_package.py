@@ -2,6 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
+from modrc import exceptions
 from modrc.lib import helper, package, setup
 
 
@@ -49,7 +50,7 @@ class TestGetPackage(unittest.TestCase):
 
     def test_package_does_not_exist(self):
         """Test functionality when a package does not exist."""
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(exceptions.ModRCPackageDoesNotExistError):
             package.get_package('test-package')
 
     def test_package_exists(self):
