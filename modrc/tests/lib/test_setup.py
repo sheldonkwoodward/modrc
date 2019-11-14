@@ -14,7 +14,7 @@ class TestInitialSetup(unittest.TestCase):
 
     def tearDown(self):
         # destroy the ModRC symlink
-        setup.teardown()
+        setup.teardown(ignore_errors=True)
         # destroy the temp directory
         self.temp.cleanup()
 
@@ -64,7 +64,7 @@ class TestTeardown(unittest.TestCase):
 
     def tearDown(self):
         # destroy the ModRC symlink
-        setup.teardown()
+        setup.teardown(ignore_errors=True)
         # destroy the temp directory
         self.temp.cleanup()
 
@@ -82,6 +82,16 @@ class TestTeardown(unittest.TestCase):
         self.assertTrue(teardown)
         self.assertFalse(modrc_dir.exists())
 
-    def test_teardown_nothing_deleted(self):
-        teardown = setup.teardown()
+    def test_modrc_not_setup(self):
+        """Tests that an exception is raised if ModRC is not setup."""
+        with self.assertRaises(exceptions.ModRCIntegrityError):
+            setup.teardown()
+
+    def test_modrc_not_setup_ignore_errors(self):
+        """Tests that an exception is not raised if ModRC is not setup and ignore_errors is True."""
+        try:
+            teardown = setup.teardown(ignore_errors=True)
+        except exceptions.ModRCIntegrityError:
+            self.fail('teardown() raised ModRCIntegrityError')
         self.assertFalse(teardown)
+

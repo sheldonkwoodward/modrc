@@ -41,13 +41,23 @@ def initial_setup(symlink=None):
     return modrc_dir
 
 
-def teardown():
+def teardown(ignore_errors=False):
     """The teardown process for ModRC to delete the ModRC directory and its file structure.
+
+    Parameters
+    ----------
+    ignore_errors : bool, optional
+        Ignore errors for teardown. Defaults to False.
 
     Returns
     -------
     bool
         Return True if anything was deleted, False if nothing was deleted.
+
+    Raises
+    ------
+    ModRCIntegrityError
+        Raised if there is no ModRC directory to delete.
     """
     # get the ModRC directory path
     modrc_dir = pathlib.Path('~/.modrc').expanduser()
@@ -59,5 +69,7 @@ def teardown():
     if modrc_dir.is_dir():
         shutil.rmtree(str(modrc_dir))
         return True
-    # nothing was deleted
-    return False
+    # raise exception if ModRC was not installed and errors should not be ignored
+    if ignore_errors:
+        return False
+    raise exceptions.ModRCIntegrityError('ModRC is not setup')

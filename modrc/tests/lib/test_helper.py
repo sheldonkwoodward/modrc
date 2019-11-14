@@ -16,7 +16,7 @@ class TestVerifyModRCDir(unittest.TestCase):
 
     def tearDown(self):
         # destroy the ModRC symlink
-        setup.teardown()
+        setup.teardown(ignore_errors=True)
         # destroy the temp directory
         self.temp.cleanup()
 
@@ -46,7 +46,7 @@ class TestGetModRCDir(unittest.TestCase):
 
     def tearDown(self):
         # destroy the ModRC symlink
-        setup.teardown()
+        setup.teardown(ignore_errors=True)
         # destroy the temp directory
         self.temp.cleanup()
 
@@ -67,7 +67,7 @@ class TestGetPackagesDir(unittest.TestCase):
 
     def tearDown(self):
         # destroy the ModRC symlink
-        setup.teardown()
+        setup.teardown(ignore_errors=True)
         # destroy the temp directory
         self.temp.cleanup()
 
@@ -106,7 +106,7 @@ class TestGetLiveDir(unittest.TestCase):
 
     def tearDown(self):
         # destroy the ModRC symlink
-        setup.teardown()
+        setup.teardown(ignore_errors=True)
         # destroy the temp directory
         self.temp.cleanup()
 

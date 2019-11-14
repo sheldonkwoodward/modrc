@@ -16,7 +16,7 @@ class TestCreatePackage(unittest.TestCase):
 
     def tearDown(self):
         # destroy the ModRC symlink
-        setup.teardown()
+        setup.teardown(ignore_errors=True)
         # destroy the temp directory
         self.temp.cleanup()
 
@@ -44,7 +44,7 @@ class TestGetPackage(unittest.TestCase):
 
     def tearDown(self):
         # destroy the ModRC symlink
-        setup.teardown()
+        setup.teardown(ignore_errors=True)
         # destroy the temp directory
         self.temp.cleanup()
 
