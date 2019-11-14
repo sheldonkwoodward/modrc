@@ -106,17 +106,17 @@ def create_file_filter(filter_name, file_name, package_name):
     file_filter.touch()
     return file_filter
 
-def compile_file(file_name, system, package_name):
+def compile_file(file_name, package_name, system):
     """Compile a given file from a package.
 
     Parameters
     ----------
     file_name : str
         The name of the file to compile.
-    system : str
-        The version string for the system, same format as filter names.
     package_name : str
         The name of the package that the file is in.
+    system : str
+        The version string for the system, same format as filter names.
 
     Returns
     -------

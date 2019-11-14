@@ -130,7 +130,7 @@ class TestCompileFile(unittest.TestCase):
     def test_file_does_not_exist(self):
         """Tests that an error is thrown if the file does not exist."""
         with self.assertRaises(exceptions.ModRCFileDoesNotExistError):
-            file.compile_file('test-file', 'macos', 'test-package')
+            file.compile_file('test-file', 'test-package', 'macos')
 
     @parameterized.expand([
         ('macos.10.15.1'),
@@ -143,7 +143,7 @@ class TestCompileFile(unittest.TestCase):
         file_filter = file.create_file_filter('global', 'test-file', 'test-package')
         with open(str(file_filter), 'w') as ff:
             ff.write('GLOBAL CONTENT')
-        compiled_file = file.compile_file('test-file', system, 'test-package')
+        compiled_file = file.compile_file('test-file', 'test-package', system)
         # check the file
         self.assertTrue(compiled_file.is_file())
         self.assertEqual(compiled_file, helper.get_live_dir().joinpath('test-file'))
@@ -164,7 +164,7 @@ class TestCompileFile(unittest.TestCase):
         file_filter_linux = file.create_file_filter('linux', 'test-file', 'test-package')
         with open(str(file_filter_linux), 'w') as ff:
             ff.write('LINUX CONTENT')
-        compiled_file = file.compile_file('test-file', system, 'test-package')
+        compiled_file = file.compile_file('test-file', 'test-package', system)
         # check the file
         self.assertTrue(compiled_file.is_file())
         self.assertEqual(compiled_file, helper.get_live_dir().joinpath('test-file'))
@@ -177,7 +177,7 @@ class TestCompileFile(unittest.TestCase):
 
     # TODO: overwrite compiled file test
 
-    # TODO: test filter scoping presedence
+    # TODO: test filter scoping precedence
 
     # TODO: test no file compiled if there are no filters
 
