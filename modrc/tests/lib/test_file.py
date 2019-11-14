@@ -175,13 +175,28 @@ class TestCompileFile(unittest.TestCase):
         with open(str(system_file_filter)) as sff, open(str(compiled_file), 'r') as cf:
             self.assertEqual(sff.readlines(), cf.readlines())
 
-    # TODO: overwrite compiled file test
+    @parameterized.expand([
+        ('macos.10.15.1'),
+        ('linux.ubuntu.18.04.3')
+    ])
+    def test_override_compiled_file(self, system):
+        """Test that a previously compiled file is overriden when being compiled again."""
+        # create the file and compile it
+        file.create_file('test-file', 'test-package')
+        file_filter = file.create_file_filter('global', 'test-file', 'test-package')
+        for i in range(2):
+            with open(str(file_filter), 'w') as ff:
+                ff.write('GLOBAL {}'.format(i))
+            compiled_file = file.compile_file('test-file', 'test-package', system)
+        # check the file
+        self.assertTrue(compiled_file.is_file())
+        self.assertEqual(compiled_file, helper.get_live_dir().joinpath('test-file'))
+        with open(str(file_filter)) as ff, open(str(compiled_file), 'r') as cf:
+            self.assertEqual(ff.readlines(), cf.readlines())
 
     # TODO: test filter scoping precedence
 
     # TODO: test no file compiled if there are no filters
-
-    # TODO: test compile MAC address filter
 
 
 class TestGetLiveFile(unittest.TestCase):

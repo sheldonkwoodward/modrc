@@ -136,6 +136,8 @@ def compile_file(file_name, package_name, system):
     file_dir = get_file(file_name, package_name)
     # create the compiled file
     compiled_file = helper.get_live_dir().joinpath(file_name)
+    if compiled_file.exists():
+        compiled_file.unlink()
     compiled_file.touch()
     # iterate over all file filters and write their contents to the compiled file
     for file_filter in file_dir.iterdir():
