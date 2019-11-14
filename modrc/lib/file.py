@@ -1,3 +1,5 @@
+import os
+
 from modrc import exceptions
 from modrc.lib import helper, package
 
@@ -93,14 +95,14 @@ def create_file_filter(filter_name, file_name, package_name):
         Raised if the package could not be found.
     ModRCFileNotFoundError
         Raised if the package or file is not found.
-    FilterNameError
+    ModRCFilterNameError
         Raised if the filter name is invalid.
     """
     # try to get the file
     file_dir = get_file(file_name, package_name)
     # validate file filter name
     if not helper.valid_filter_name(filter_name):
-        raise exceptions.FilterNameError('Invalid file filter name')
+        raise exceptions.ModRCFilterNameError('Invalid file filter name')
     # create the file filter
     file_filter = file_dir.joinpath(filter_name)
     file_filter.touch()
@@ -134,6 +136,9 @@ def compile_file(file_name, package_name, system):
     """
     # try to get the file
     file_dir = get_file(file_name, package_name)
+    # check for filters
+    if not os.listdir(str(file_dir)):
+        raise exceptions.ModRCFilterDoesNotExistError('No filters exist in the file')
     # create the compiled file
     compiled_file = helper.get_live_dir().joinpath(file_name)
     if compiled_file.exists():

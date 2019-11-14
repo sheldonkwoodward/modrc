@@ -108,7 +108,7 @@ class TestCreateFileFilter(unittest.TestCase):
         """Tests that an exception is thrown if the filter name is invalid"""
         package.create_package('test-package')
         file.create_file('test-file', 'test-package')
-        with self.assertRaises(exceptions.FilterNameError):
+        with self.assertRaises(exceptions.ModRCFilterNameError):
             file.create_file_filter('bad', 'test-file', 'test-package')
 
 
@@ -194,9 +194,19 @@ class TestCompileFile(unittest.TestCase):
         with open(str(file_filter)) as ff, open(str(compiled_file), 'r') as cf:
             self.assertEqual(ff.readlines(), cf.readlines())
 
-    # TODO: test filter scoping precedence
+    @parameterized.expand([
+        ('macos.10.15.1'),
+        ('linux.ubuntu.18.04.3')
+    ])
+    def test_filters_do_not_exist(self, system):
+        """Tests that an exception is raised if no filters exist when a file is compiled."""
+        file.create_file('test-file', 'test-package')
+        # create the file filter with content and compile it
+        with self.assertRaises(exceptions.ModRCFilterDoesNotExistError):
+            file.compile_file('test-file', 'test-package', system)
+        self.assertFalse(helper.get_live_dir().joinpath('test-file').exists())
 
-    # TODO: test no file compiled if there are no filters
+    # TODO: test filter scoping precedence
 
 
 class TestGetLiveFile(unittest.TestCase):

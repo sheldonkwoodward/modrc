@@ -34,6 +34,11 @@ class ModRCLiveFileDoesNotExistError(ModRCError):
     pass
 
 
-class FilterNameError(ModRCError):
+class ModRCFilterDoesNotExistError(ModRCError):
+    """Raised when a file is compiled when no filters exist for it."""
+    pass
+
+
+class ModRCFilterNameError(ModRCError):
     """Raised when there is an invalid filter name"""
     pass
