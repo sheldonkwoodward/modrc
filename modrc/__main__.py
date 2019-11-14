@@ -13,6 +13,7 @@ from .commands import setup
 @click.option('--debug', is_flag=True, envvar='DEBUG')
 @click.pass_context
 def main(ctx, debug):
+    """The CLI to make managing your files across systems easier."""
     # set global context
     ctx.obj = {
         'debug': debug
