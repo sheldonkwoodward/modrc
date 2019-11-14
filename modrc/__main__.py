@@ -3,17 +3,21 @@
 
 """Main CLI entrypoint."""
 
-from .commands import *
+
+import click
+
+from .commands import setup
 
 
 @click.group()
-def main():
-    pass
+@click.option('--debug', is_flag=True, envvar='DEBUG')
+@click.pass_context
+def main(ctx, debug):
+    # set global context
+    ctx.obj = {
+        'debug': debug
+    }
 
 
 # commands
-main.add_command(ping)
-
-
-if __name__ == '__main__':
-    main()
+main.add_command(setup)

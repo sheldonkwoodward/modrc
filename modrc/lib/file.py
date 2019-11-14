@@ -133,6 +133,8 @@ def compile_file(file_name, package_name, system):
         Raised if the package could not be found.
     ModRCFileNotFoundError
         Raised if the file or package could not be found.
+    ModRCFilterDoesNotExistError
+        Raised if no filters exist for the file being compiled.
     """
     # try to get the file
     file_dir = get_file(file_name, package_name)

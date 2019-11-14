@@ -20,7 +20,7 @@ def initial_setup(symlink=None):
     Raises
     ------
     ModRCIntegrityError
-        Raised if the ModRC direcotory with the specified name already exists.
+        Raised if the ModRC directory with the specified name already exists.
     """
     # create the modrc directory
     modrc_dir = pathlib.Path('~/.modrc').expanduser()

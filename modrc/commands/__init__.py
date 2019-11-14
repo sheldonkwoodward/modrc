@@ -1,4 +1,1 @@
-# sheldon woodward
-# 4/15/18
-
-from .ping import *
+from .setup import setup
