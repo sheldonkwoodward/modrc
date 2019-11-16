@@ -1,40 +1,69 @@
-# ModRC CLI
+# ModRC
 ![](https://github.com/sheldonkwoodward/modrc-cli/workflows/tests/badge.svg)
 ![](https://img.shields.io/github/license/sheldonkwoodward/modrc-cli.svg)
 
-The command line interface for the ModRC shell profile management workflow. ModRC CLI makes it easy to install, manage, and sync your shell profile across all your computer.
+The CLI to make managing your config files across systems easier.
 
-# Installation
+
+## Description
+ModRC makes it easy to install, manage, and sync your dotfiles or any other config across all your computers.
+
+
+## Installation
+Installation of ModRC is easy, simply clone the repository and install with pip.
 ```
 $ pip install .
 ```
 
-# Commands
-- manifest - Manage manifests
-- package - Manage packages
-- setup - Setup ModRC
+After installing with pip, run the installation command.
+```
+$ modrc setup install
+```
 
-## manifest
-Manage manifests
+This will create the ModRC directory at `~/.modrc`.
 
-### Synopsis
-- `modrc manifest`
-- `modrc manifest new [<name>]`
-- `modrc manifest add <package>`
 
-## package
-Manage packages
+## Usage
+ModRC consists of a number of sub-commands to manage your installatio and files.
 
-### Synopsis
-- `modrc package`
-- `modrc package install <url>`
-- `modrc package uninstall (<url> | <name>)`
+### Setup
+```
+modrc setup
+modrc setup install [(-e|--editor) <editor>] [(-u|--url) <url>] [(-p|--package) <package>] [(-c|--compile)] [(-s|--auto-sync)]
+modrc setup uninstall
+```
 
-## setup
-Setup ModRC
+### Compile
+```
+modrc compile [--package <package> [--file <file>]]
+```
 
-### Synopsis
-- `modrc setup [(-d | --directory) <directory>] [(-r | --repo) <url>] [--no-default]`
-- `modrc setup directory [(-m | --move)] <directory>`
-- `modrc setup repo set <url>`
-- `modrc setup repo remove <url>`
+### Package
+```
+modrc package add [(-d | --default)] [--url <url>] <package>
+modrc package remove [-y] <package>
+modrc package edit [<package>]
+modrc package default <package>
+modrc package sync [<package>]
+```
+
+### File
+```
+modrc file add <file> [<package>]
+modrc file remove [-y] <file> [<package>]
+modrc file edit <file> [<package>]
+```
+
+### Filter
+```
+modrc filter add <filter> <file> [<package>]
+modrc filter remove [-y] <filter> <file> [<package>]
+modrc filter edit <filter> <file> [<package>]
+```
+
+### Chunk
+```
+modrc chunk add <chunk> [<package>]
+modrc chunk remove [-y] <chunk> [<package>]
+modrc chunk edit <chunk> [<package>]
+```
