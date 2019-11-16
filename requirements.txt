@@ -2,6 +2,7 @@
 click
 clint
 distro
+pyyaml
 
 # dev dependencies
 parameterized

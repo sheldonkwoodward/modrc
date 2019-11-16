@@ -19,7 +19,7 @@ setup(name='modrc',
       description='A bare-bones command line program.',
       long_description=long_description,
       packages=['modrc', 'modrc/commands'],
-      install_requires=['click', 'clint', 'distro'],
+      install_requires=['click', 'clint', 'distro', 'pyyaml'],
       entry_points={
           'console_scripts': [
               'modrc = modrc.__main__:main'
