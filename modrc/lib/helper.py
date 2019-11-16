@@ -22,7 +22,7 @@ def verify_modrc_dir():
     if not modrc_dir.is_dir():
         raise exceptions.ModRCIntegrityError('Not a valid ModRC directory')
     # raise an exception if the ModRC file is not valid
-    modrc_file = modrc_dir.joinpath('.modrc')
+    modrc_file = modrc_dir.joinpath('modrc.yml')
     if not modrc_file.is_file():
         raise exceptions.ModRCIntegrityError('Not a valid ModRC directory')
     # return True if the ModRC directory is valid
@@ -45,6 +45,24 @@ def get_modrc_dir():
     if not verify_modrc_dir():
         raise exceptions.ModRCIntegrityError('The ModRC directory could not be found')
     return modrc_dir
+
+def get_modrc_file():
+    """Try to find the ModRC file automatically.
+
+    Returns
+    -------
+    :obj:`Path`
+        Return the path to the ModRC file.
+
+    Raises
+    ------
+    ModRCIntegrityError
+        Raised if the ModRC directory or file could not be found automatically.
+    """
+    modrc_file = get_modrc_dir().joinpath('modrc.yml')
+    if not modrc_file.is_file():
+        raise exceptions.ModRCIntegrityError
+    return modrc_file
 
 def get_packages_dir():
     """Get the packages directory within the ModRC directory.

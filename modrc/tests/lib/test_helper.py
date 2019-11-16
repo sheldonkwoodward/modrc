@@ -59,6 +59,30 @@ class TestGetModRCDir(unittest.TestCase):
         self.assertEqual(modrc_dir, helper.get_modrc_dir())
 
 
+class TestGetModRCFile(unittest.TestCase):
+    def setUp(self):
+        # setup a temporary mock home directory
+        self.temp = tempfile.TemporaryDirectory()
+        self.temp_dir = pathlib.Path(self.temp.name)
+
+    def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown(ignore_errors=True)
+        # destroy the temp directory
+        self.temp.cleanup()
+
+    def test_does_not_exist(self):
+        modrc_dir = pathlib.Path('~/.modrc').expanduser()
+        modrc_dir.mkdir()
+        with self.assertRaises(exceptions.ModRCIntegrityError):
+            helper.get_modrc_file()
+
+    def test_exists(self):
+        modrc_dir = setup.initial_setup(self.temp_dir)
+        modrc_file = helper.get_modrc_file()
+        self.assertEqual(modrc_file, modrc_dir.joinpath('modrc.yml'))
+
+
 class TestGetPackagesDir(unittest.TestCase):
     def setUp(self):
         # setup a temporary mock home directory

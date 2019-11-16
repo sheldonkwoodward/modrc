@@ -40,7 +40,7 @@ class TestInitialSetup(unittest.TestCase):
     def test_create_modrc_file(self):
         """Test .modrc file creation"""
         modrc_dir = setup.initial_setup(self.temp_dir)
-        modrc_file = modrc_dir.joinpath('.modrc')
+        modrc_file = modrc_dir.joinpath('modrc.yml')
         self.assertTrue(modrc_file.exists())
 
     def test_create_packages_directory(self):

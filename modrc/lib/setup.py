@@ -31,7 +31,7 @@ def initial_setup(symlink=None):
     else:
         modrc_dir.symlink_to(symlink.expanduser())
     # create files in the modrc directory
-    modrc_file = modrc_dir.joinpath('.modrc')
+    modrc_file = modrc_dir.joinpath('modrc.yml')
     packages_dir = modrc_dir.joinpath('packages')
     live_dir = modrc_dir.joinpath('live')
     modrc_file.touch()
