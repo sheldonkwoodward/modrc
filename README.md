@@ -51,7 +51,7 @@ modrc package sync [<package>]
 ```
 modrc file add <file> [<package>]
 modrc file remove [-y] <file> [<package>]
-modrc file edit <file> [<package>]
+modrc file edit [((-c|--compile)|(-n|--no-compile))] <file> [<package>]
 ```
 
 ### Filter
