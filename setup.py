@@ -19,6 +19,8 @@ setup(name='modrc',
       description='A bare-bones command line program.',
       long_description=long_description,
       packages=['modrc', 'modrc/commands'],
+      use_scm_version=True,
+      setup_requires=['setuptools_scm'],
       install_requires=['click', 'clint', 'distro', 'pyyaml'],
       entry_points={
           'console_scripts': [
