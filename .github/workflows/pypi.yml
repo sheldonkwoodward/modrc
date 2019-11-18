@@ -1,6 +1,8 @@
 name: Publish ModRC to PyPI and Test PyPI
-on: push
-if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build-n-publish:
