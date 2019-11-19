@@ -56,7 +56,6 @@ def install():
         success = False
     # set the default editor
 
-
     # FINISH
     # react to the outcome of the installation
     if success:

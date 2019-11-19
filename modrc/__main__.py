@@ -1,10 +1,7 @@
-"""Main CLI entrypoint."""
-
-
 import click
 
 import modrc
-from .commands import setup
+from modrc.commands import setup
 
 
 @click.group()
