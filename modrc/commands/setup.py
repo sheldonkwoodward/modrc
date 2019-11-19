@@ -1,9 +1,3 @@
-# sheldon woodward
-# 4/15/18
-
-"""The setup command."""
-
-
 import click
 from clint import textui
 

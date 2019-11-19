@@ -1,18 +1,24 @@
-# ModRC
-![](https://github.com/sheldonkwoodward/modrc-cli/workflows/tests/badge.svg)
+# modrc
+![](https://img.shields.io/pypi/v/modrc)
+![](https://img.shields.io/pypi/status/modrc)
 ![](https://img.shields.io/github/license/sheldonkwoodward/modrc-cli.svg)
+![](https://github.com/sheldonkwoodward/modrc-cli/workflows/tests/badge.svg)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/22a052d84a1f437e93e2364710a1f911)](https://www.codacy.com/manual/sheldonkwoodward/modrc?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sheldonkwoodward/modrc&amp;utm_campaign=Badge_Grade)
 
 The CLI to make managing your config files across systems easier.
-
 
 ## Description
 ModRC makes it easy to install, manage, and sync your dotfiles or any other config across all your computers.
 
-
 ## Installation
-Installation of ModRC is easy, simply clone the repository and install with pip.
+Installation of ModRC is easy, install it directly from PyPI.
 ```
-$ pip install .
+$ pip install modrc
+```
+
+If you want to edit the installed code or PyPI is not available, setuptools works for installation.
+```
+$ pip install -e .
 ```
 
 After installing with pip, run the installation command.
@@ -22,9 +28,8 @@ $ modrc setup install
 
 This will create the ModRC directory at `~/.modrc`.
 
-
 ## Usage
-ModRC consists of a number of sub-commands to manage your installatio and files.
+ModRC consists of a number of sub-commands to manage your installatio and files. **Not all commands are available/working as this project is still in Alpha.** This list acts as a guideline for development, not an official list of forthcoming commands.
 
 ### Setup
 ```
@@ -66,4 +71,10 @@ modrc filter edit <filter> <file> [<package>]
 modrc chunk add <chunk> [<package>]
 modrc chunk remove [-y] <chunk> [<package>]
 modrc chunk edit <chunk> [<package>]
+```
+
+## Testing
+Testing is slightly complicated since ModRC creates and deletes files in a user's home directory. To avoid modifying files in your home directory, it is advised to run the tests in a container. To run the tests in an isolated Docker container, use the following command. It will mount the code as a volume so you dont have to re-compile the container every time the tests run.
+```
+$ ./run_tests.sh
 ```
