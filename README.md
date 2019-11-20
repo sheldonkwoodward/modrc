@@ -1,8 +1,8 @@
 # modrc
-![](https://img.shields.io/pypi/v/modrc)
-![](https://img.shields.io/pypi/status/modrc)
-![](https://img.shields.io/github/license/sheldonkwoodward/modrc-cli.svg)
-![](https://github.com/sheldonkwoodward/modrc-cli/workflows/tests/badge.svg)
+[![PyPI Version](https://img.shields.io/pypi/v/modrc)](https://pypi.org/project/modrc/)
+[![PyPI Status](https://img.shields.io/pypi/status/modrc)](https://pypi.org/project/modrc/)
+[![License](https://img.shields.io/github/license/sheldonkwoodward/modrc.svg)](https://github.com/sheldonkwoodward/modrc/blob/master/LICENSE.txt)
+[![Tests Status](https://github.com/sheldonkwoodward/modrc-cli/workflows/tests/badge.svg)]()
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/22a052d84a1f437e93e2364710a1f911)](https://www.codacy.com/manual/sheldonkwoodward/modrc?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sheldonkwoodward/modrc&amp;utm_campaign=Badge_Grade)
 
 The CLI to make managing your config files across systems easier.
