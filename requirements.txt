@@ -1,6 +1,5 @@
 # package dependencies
 click
-clint
 distro
 pyyaml
 

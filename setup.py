@@ -14,7 +14,7 @@ setup(
     packages=['modrc'],
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
-    install_requires=['click', 'clint', 'distro', 'pyyaml'],
+    install_requires=['click', 'distro', 'pyyaml'],
     entry_points={
         'console_scripts': [
             'modrc = modrc.__main__:main'

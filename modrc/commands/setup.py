@@ -1,5 +1,4 @@
 import click
-from clint import textui
 
 from modrc import exceptions
 from modrc.lib import setup as modrc_setup
@@ -22,11 +21,11 @@ def install():
     # choose package creation or installation
     package_name, repo_url = prompt_package_creation_installation()
     # choose the default editor
-    editor = textui.prompt.query('File editor', default='vim')
+    editor = click.prompt('File editor', default='vim')
     # choose to automatically compile default package changes
-    auto_compile = textui.prompt.yn('Automatically compile changes', default='y')
+    auto_compile = click.confirm('Automatically compile changes?', default=True)
     # choose to automatically sync default package changes
-    auto_sync = textui.prompt.yn('Automatically sync changes', default='y')
+    auto_sync = click.confirm('Automatically sync changes?', default=True)
 
     # INSTALLATION
     # try to install ModRC
@@ -53,9 +52,9 @@ def install():
     # FINISH
     # react to the outcome of the installation
     if success:
-        textui.puts('ModRC successfully installed at ~/.modrc')
+        click.echo('ModRC successfully installed at ~/.modrc')
     else:
-        textui.puts(textui.colored.red('ModRC is already installed'))
+        click.secho('ModRC is already installed', fg='red', bold=True)
 
 @setup.command()
 def uninstall():
@@ -72,20 +71,20 @@ def uninstall():
         success = False
     # react to the outcome of the command
     if success:
-        textui.puts('ModRC uninstalled at ~/.modrc')
+        click.echo('ModRC uninstalled at ~/.modrc')
     else:
-        textui.puts('ModRC is not currently installed')
+        click.echo('ModRC is not currently installed')
 
 def prompt_package_creation_installation():
     package_name = None
     repo_url = None
     # create new package
-    if not textui.prompt.yn('Create a new package', default='n'):
-        package_name = textui.prompt.query('Package name')
+    if click.confirm('Create a new package'):
+        package_name = click.prompt('Package name')
         # add repo to package
-        if textui.prompt.yn('Add repo clone URL', default='y'):
-            repo_url = textui.prompt.query('Repo clone URL')
+        if click.confirm('Add repo clone URL'):
+            repo_url = click.prompt('Repo clone URL')
     # install existing package
-    elif textui.prompt.yn('Add an existing package repo', default='y'):
-        repo_url = textui.prompt.query('Repo clone URL')
+    elif click.confirm('Add an existing package repo', default=True):
+        repo_url = click.prompt('Repo clone URL')
     return package_name, repo_url
