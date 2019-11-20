@@ -11,21 +11,28 @@ def setup():
     pass
 
 @setup.command()
-def install():
+@click.option('--ni', '--non-interactive', 'non_interactive', is_flag=True, help='Toggle interactive setup off. Default settings will be used if not specified.')
+@click.option('-u', '--url', 'repo_url', help='The URL to a package repository. Will be ignored if name is specified.')
+@click.option('-n', '--name', 'package_name', help='The name of the new package.')
+@click.option('-e', '--editor', default='vim', help='The default editor when opening files.')
+@click.option('--ac', '--auto-compile', 'auto_compile', is_flag=True, help='Toggle auto-compile on.')
+@click.option('--as', '--auto-sync', 'auto_sync', is_flag=True, help='Toggle auto-sync on.')
+def install(non_interactive, repo_url, package_name, editor, auto_compile, auto_sync):
     """Install ModRC into the current user's home folder."""
     # SETUP
     # get the debug context
     debug = click.get_current_context().obj['debug']
 
     # INTERACTIVE
-    # choose package creation or installation
-    package_name, repo_url = prompt_package_creation_installation()
-    # choose the default editor
-    editor = click.prompt('File editor', default='vim')
-    # choose to automatically compile default package changes
-    auto_compile = click.confirm('Automatically compile changes?', default=True)
-    # choose to automatically sync default package changes
-    auto_sync = click.confirm('Automatically sync changes?', default=True)
+    if not non_interactive:
+        # choose package creation or installation
+        package_name, repo_url = prompt_package_creation_installation()
+        # choose the default editor
+        editor = click.prompt('File editor', default='vim')
+        # choose to automatically compile default package changes
+        auto_compile = click.confirm('Automatically compile changes?', default=True)
+        # choose to automatically sync default package changes
+        auto_sync = click.confirm('Automatically sync changes?', default=True)
 
     # INSTALLATION
     # try to install ModRC
@@ -43,6 +50,8 @@ def install():
             # TODO: clone the package from the URL
             pass
     except exceptions.ModRCIntegrityError:
+        success = False
+    except Exception:
         # re-raise the exception if debugging is on
         if debug:
             raise
