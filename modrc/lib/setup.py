@@ -21,13 +21,13 @@ def initial_setup(symlink=None):
 
     Raises
     ------
-    ModRCIntegrityError
-        Raised if the ModRC directory with the specified name already exists.
+    ModRCInstalledError
+        Raised if ModRC is already installed
     """
     # create the modrc directory
     modrc_dir = pathlib.Path('~/.modrc').expanduser()
     if modrc_dir.is_dir():
-        raise exceptions.ModRCIntegrityError('A ModRC directory is already here')
+        raise exceptions.ModRCInstalledError('A ModRC directory is already here')
     elif symlink is None:
         modrc_dir.mkdir()
     else:

@@ -4,6 +4,11 @@ class ModRCError(Exception):
     pass
 
 
+class ModRCInstalledError(ModRCError):
+    """Raised when ModRC is already installed."""
+    pass
+
+
 class ModRCIntegrityError(ModRCError):
     """Raised when there is an error with the ModRC installation."""
     pass

@@ -23,7 +23,7 @@ class TestInitialSetup(unittest.TestCase):
         """Test that exception is raised if the ModRC directory already exists."""
         modrc_dir = pathlib.Path('~/.modrc').expanduser()
         modrc_dir.mkdir()
-        with self.assertRaises(exceptions.ModRCIntegrityError):
+        with self.assertRaises(exceptions.ModRCInstalledError):
             setup.initial_setup(self.temp_dir)
 
     def test_initial_setup(self):
