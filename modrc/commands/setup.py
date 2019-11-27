@@ -1,8 +1,9 @@
 import click
 
 from modrc import exceptions
-from modrc.lib import setup as modrc_setup
+from modrc.lib import helper as modrc_helper
 from modrc.lib import package as modrc_package
+from modrc.lib import setup as modrc_setup
 
 
 @click.group()
@@ -23,47 +24,48 @@ def install(non_interactive, repo_url, package_name, editor, auto_compile, auto_
     # get the debug context
     debug = click.get_current_context().obj['debug']
 
-    # INTERACTIVE
-    if not non_interactive:
-        # choose package creation or installation
-        package_name, repo_url = prompt_package_creation_installation()
-        # choose the default editor
-        editor = click.prompt('File editor', default='vim')
-        # choose to automatically compile default package changes
-        auto_compile = click.confirm('Automatically compile changes?', default=True)
-        # choose to automatically sync default package changes
-        auto_sync = click.confirm('Automatically sync changes?', default=True)
-
-    # INSTALLATION
-    # try to install ModRC
-    success = True
+    # check if ModRC is already installed
     try:
+        if modrc_helper.verify_modrc_dir():
+            click.secho('ModRC is already installed', fg='red', bold=True)
+            exit(2)
+    except exceptions.ModRCIntegrityError:
+        pass
+
+    try:
+        # INTERACTIVE
+        if not non_interactive:
+            # choose package creation or installation
+            package_name, repo_url = prompt_package_creation_installation()
+            # choose the default editor
+            editor = click.prompt('File editor', default='vim')
+            # choose to automatically compile default package changes
+            auto_compile = click.confirm('Automatically compile changes?', default=True)
+            # choose to automatically sync default package changes
+            auto_sync = click.confirm('Automatically sync changes?', default=True)
+
+        # INSTALLATION
         # setup the ModRC dir
         modrc_setup.initial_setup()
         # set the system configuration settings
-        modrc_setup.populate_modrc_file(default_package=package_name, editor=editor, auto_compile=auto_compile, auto_sync=auto_sync)
+        modrc_setup.populate_modrc_file(package_name, editor, auto_compile, auto_sync)
         # create a new package
         if package_name is not None:
             modrc_package.create_package(package_name, repo_url=repo_url)
         # clone an existing package
         elif repo_url is not None:
-            # TODO: clone the package from the URL
+            # TODO: setup command URL clone option #44
             pass
-    except exceptions.ModRCIntegrityError:
-        success = False
     except Exception:
         # re-raise the exception if debugging is on
         if debug:
             raise
-        success = False
+        click.secho('An error occured. Run with --debug to see stack trace.', fg='red', bold=True)
     # set the default editor
 
     # FINISH
     # react to the outcome of the installation
-    if success:
-        click.echo('ModRC successfully installed at ~/.modrc')
-    else:
-        click.secho('ModRC is already installed', fg='red', bold=True)
+    click.echo('ModRC successfully installed at ~/.modrc')
 
 @setup.command()
 def uninstall():
