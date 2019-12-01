@@ -72,19 +72,20 @@ def uninstall():
     """Uninstall ModRC from the current user's home folder."""
     # context
     debug = click.get_current_context().obj['debug']
-    # try to uninstall ModRC
-    success = True
+
+    # uninstall ModRC
     try:
-        modrc_setup.teardown()
+        # react to the outcome of the command
+        if modrc_setup.teardown(ignore_errors=True):
+            click.echo('ModRC uninstalled at ~/.modrc')
+        else:
+            click.echo('ModRC is not currently installed')
+            exit(2)
     except exceptions.ModRCIntegrityError:
+        # re-raise the exception if debugging is on
         if debug:
             raise
-        success = False
-    # react to the outcome of the command
-    if success:
-        click.echo('ModRC uninstalled at ~/.modrc')
-    else:
-        click.echo('ModRC is not currently installed')
+        click.secho('An error occured. Run with --debug to see stack trace.', fg='red', bold=True)
 
 def prompt_package_creation_installation():
     package_name = None
