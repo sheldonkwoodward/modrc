@@ -7,7 +7,7 @@ import pytest
 from modrc import __main__
 from modrc.lib import setup
 
-class TestSetupNonInteractive:
+class TestInstallNonInteractive:
     @pytest.mark.usefixtures('teardown')
     @pytest.mark.usefixtures('click_runner')
     def test_modrc_already_installed(self, click_runner):
@@ -90,3 +90,22 @@ class TestSetupNonInteractive:
         assert result.exit_code == 0
 
 # TODO: setup command interactive testing #43
+
+class TestUninstallNonInteractive:
+    @pytest.mark.usefixtures('teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_modrc_not_installed(self, click_runner):
+        """Test that an error is raised if ModRC is not installed."""
+        with mock.patch('modrc.lib.setup.teardown', return_value=False) as teardown:
+            result = click_runner.invoke(__main__.main, ['setup', 'uninstall'])
+        teardown.assert_called_once_with(ignore_errors=True)
+        assert result.exit_code == 2
+
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_modrc_uninstalled(self, click_runner):
+        """Test ModRC is uninstalled."""
+        with mock.patch('modrc.lib.setup.teardown', return_value=True) as teardown:
+            result = click_runner.invoke(__main__.main, ['setup', 'uninstall'])
+        teardown.assert_called_once_with(ignore_errors=True)
+        assert result.exit_code == 0
