@@ -206,7 +206,7 @@ class TestCompileFile(unittest.TestCase):
             file.compile_file('test-file', 'test-package', system)
         self.assertFalse(helper.get_live_dir().joinpath('test-file').exists())
 
-    # TODO: test filter scoping precedence
+    # TODO: compile_file helper does not have precedence set for different filter names #27
 
 
 class TestGetLiveFile(unittest.TestCase):
