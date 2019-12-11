@@ -28,7 +28,7 @@ def initial_setup(symlink=None):
     modrc_dir = pathlib.Path('~/.modrc').expanduser()
     if modrc_dir.is_dir():
         raise exceptions.ModRCInstalledError('A ModRC directory is already here')
-    elif symlink is None:
+    if symlink is None:
         modrc_dir.mkdir()
     else:
         modrc_dir.symlink_to(symlink.expanduser())

@@ -23,9 +23,8 @@ class TestInstallNonInteractive:
     def test_initial_setup_called(self, click_runner):
         """Test that initial setup is called if ModRC is not installed."""
         with mock.patch('modrc.lib.setup.initial_setup') as initial_setup:
-            result = click_runner.invoke(__main__.main, ['setup', 'install', '--ni'])
+            click_runner.invoke(__main__.main, ['setup', 'install', '--ni'])
         initial_setup.assert_called_once_with()
-        assert result.exit_code == 0
 
     @pytest.mark.usefixtures('teardown')
     @pytest.mark.usefixtures('click_runner')
