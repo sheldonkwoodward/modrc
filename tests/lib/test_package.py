@@ -21,6 +21,13 @@ class TestCreatePackage(unittest.TestCase):
         # destroy the temp directory
         self.temp.cleanup()
 
+    def test_package_already_exists(self):
+        """Test that an exception is raised if the package already exists."""
+        new_package_name = 'test-package'
+        package.create_package(new_package_name)
+        with self.assertRaises(exceptions.ModRCPackageExistsError):
+            package.create_package(new_package_name)
+
     def test_create_package_dir(self):
         """Test the creation of a new package directory."""
         new_package_name = 'test-package'

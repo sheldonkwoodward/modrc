@@ -23,12 +23,17 @@ def create_package(package_name, repo_url=None):
     ------
     ModRCIntegrityError
         Raised if either the ModRC or packages directory do not exist.
+    ModRCPackageExistsError
+        Raised if the package already exists.
     """
     # get the packges directory
     packages_dir = helper.get_packages_dir()
     # define the package directories and files
     new_package_dir = packages_dir.joinpath(package_name)
     new_package_yml = new_package_dir.joinpath('package.yml')
+    # raise a ModRCPackageExistsError if the package is already installed
+    if new_package_dir.exists():
+        raise exceptions.ModRCPackageExistsError("Package is already installed")
     # create the package directories and files
     new_package_dir.mkdir()
     new_package_yml.touch()
