@@ -1,6 +1,7 @@
 import click
 
 import modrc
+from modrc.commands import package
 from modrc.commands import setup
 
 
@@ -11,3 +12,4 @@ def main():
 
 # commands
 main.add_command(setup)
+main.add_command(package)
