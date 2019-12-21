@@ -13,6 +13,7 @@ class TestCreatePackage(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.temp_dir = pathlib.Path(self.temp.name)
         setup.initial_setup(self.temp_dir)
+        setup.populate_modrc_file(editor='vim', auto_compile=True, auto_sync=True)
         self.packages_dir = helper.get_packages_dir()
 
     def tearDown(self):
@@ -43,12 +44,21 @@ class TestCreatePackage(unittest.TestCase):
 
     def test_add_repo_url(self):
         """Test that the repo URL is added to the package.yml file."""
-        package.create_package('test-package', 'https://url.example')
+        package.create_package('test-package', repo_url='https://url.example')
         package_file = package.get_package_file('test-package')
         with open(str(package_file), 'r') as yf:
             package_yaml = yaml.safe_load(yf)
         self.assertIn('repourl', package_yaml)
         self.assertEqual(package_yaml['repourl'], 'https://url.example')
+
+    def test_set_default(self):
+        """Test that the package is set as the default in the modrc.yml file."""
+        package.create_package('test-package', default=True)
+        modrc_file = helper.get_modrc_file()
+        with open(str(modrc_file), 'r') as mf:
+            modrc_yaml = yaml.safe_load(mf)
+        self.assertIn('defaultpackage', modrc_yaml)
+        self.assertEqual(modrc_yaml['defaultpackage'], 'test-package')
 
 
 class TestGetPackage(unittest.TestCase):

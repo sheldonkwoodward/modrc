@@ -4,7 +4,7 @@ from modrc import exceptions
 from modrc.lib import helper
 
 
-def create_package(package_name, repo_url=None):
+def create_package(package_name, repo_url=None, default=False):
     """Create a new ModRC package.
 
     Parameters
@@ -13,6 +13,8 @@ def create_package(package_name, repo_url=None):
         The name of the new package.
     repo_url : str
         The URL of the packages repository.
+    default : boolean
+        Whether the package should be set as the new default.
 
     Returns
     -------
@@ -48,6 +50,16 @@ def create_package(package_name, repo_url=None):
         # write to the package.yml
         with open(str(package_file), 'w') as yf:
             yaml.safe_dump(package_yaml, yf, default_flow_style=False)
+    # set the package as default in modrc.yml
+    if default:
+        modrc_file = helper.get_modrc_file()
+        with open(str(modrc_file), 'r') as mf:
+            modrc_yaml = yaml.safe_load(mf)
+            if modrc_yaml is None:
+                modrc_yaml = {}
+        modrc_yaml['defaultpackage'] = package_name
+        with open(str(modrc_file), 'w') as mf:
+            yaml.safe_dump(modrc_yaml, mf, default_flow_style=False)
     return new_package_dir
 
 def get_package(package_name):
