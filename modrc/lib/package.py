@@ -1,5 +1,7 @@
 import yaml
 
+import git
+
 from modrc import exceptions
 from modrc.lib import helper
 
@@ -39,6 +41,8 @@ def create_package(package_name, repo_url=None, default=False):
     # create the package directories and files
     new_package_dir.mkdir()
     new_package_yml.touch()
+    # initialize the package as a git repo
+    repo = git.Repo.init(str(new_package_dir))
     # add the repo url to package.yml if it was passed into the method
     if repo_url is not None:
         package_file = new_package_dir.joinpath('package.yml')
@@ -50,6 +54,11 @@ def create_package(package_name, repo_url=None, default=False):
         # write to the package.yml
         with open(str(package_file), 'w') as yf:
             yaml.safe_dump(package_yaml, yf, default_flow_style=False)
+        # add the repo url as the repo origin
+        repo.create_remote('origin', url=repo_url)
+    # commit package.yml to the package git repo and
+    repo.index.add(['package.yml'])
+    repo.index.commit('{} package initialization.'.format(package_name))
     # set the package as default in modrc.yml
     if default:
         modrc_file = helper.get_modrc_file()

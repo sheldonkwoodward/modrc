@@ -3,6 +3,8 @@ import tempfile
 import unittest
 import yaml
 
+import git
+
 from modrc import exceptions
 from modrc.lib import helper, package, setup
 
@@ -59,6 +61,25 @@ class TestCreatePackage(unittest.TestCase):
             modrc_yaml = yaml.safe_load(mf)
         self.assertIn('defaultpackage', modrc_yaml)
         self.assertEqual(modrc_yaml['defaultpackage'], 'test-package')
+
+    def test_initialize_repo(self):
+        """Test that the package is initialized as a new Git repo."""
+        package_dir = package.create_package('test-package')
+        self.assertEqual(git.Repo(str(package_dir)).git_dir, str(package_dir.joinpath('.git')))
+
+    def test_commit_package_yaml(self):
+        """Test that the package.yml file is committed to the new Git repo."""
+        package_dir = package.create_package('test-package')
+        repo = git.Repo(str(package_dir))
+        tree = repo.head.commit.tree
+        self.assertIn('package.yml', tree)
+
+    def test_add_remote_origin(self):
+        """Test that the the repo_url is set as origin if it was included."""
+        package_dir = package.create_package('test-package', repo_url='git@github.com:test/test.git')
+        repo = git.Repo(str(package_dir))
+        self.assertIn('origin', repo.remotes)
+        self.assertEqual(repo.remotes.origin.url, 'git@github.com:test/test.git')
 
 
 class TestGetPackage(unittest.TestCase):

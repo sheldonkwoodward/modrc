@@ -158,4 +158,3 @@ class TestTeardown(unittest.TestCase):
         except exceptions.ModRCIntegrityError:
             self.fail('teardown() raised ModRCIntegrityError')
         self.assertFalse(teardown)
-

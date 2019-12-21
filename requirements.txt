@@ -1,6 +1,7 @@
 # package dependencies
 click
 distro
+GitPython
 pyyaml
 
 # dev dependencies
