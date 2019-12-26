@@ -36,4 +36,8 @@ class ModRCFilterDoesNotExistError(ModRCError):
 
 
 class ModRCFilterNameError(ModRCError):
-    """Raised when there is an invalid filter name"""
+    """Raised when there is an invalid filter name."""
+
+
+class ModRCGitError(ModRCError):
+    """Taised when there is a Git error."""

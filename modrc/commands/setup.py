@@ -14,7 +14,7 @@ def setup():
 
 @setup.command()
 @click.option('--ni', '--non-interactive', 'non_interactive', is_flag=True, help='Toggle interactive setup. Default settings will be used if not specified.')
-@click.option('-u', '--url', 'repo_url', help='The URL to a package repository. Will be ignored if name is specified.')
+@click.option('-u', '--url', 'repo_url', help='The URL to a package repository. Set as origin if new package is created.')
 @click.option('-n', '--name', 'package_name', help='The name of the new package.')
 @click.option('-e', '--editor', default='vim', help='The default editor when opening files.')
 @click.option('--ac', '--auto-compile', 'auto_compile', is_flag=True, help='Toggle auto-compile on.')

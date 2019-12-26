@@ -1,3 +1,4 @@
+import re
 import yaml
 
 import git
@@ -30,6 +31,7 @@ def create_package(package_name, repo_url=None, default=False):
     ModRCPackageExistsError
         Raised if the package already exists.
     """
+    # TODO: validate repo url #52
     # get the packges directory
     packages_dir = helper.get_packages_dir()
     # define the package directories and files
@@ -70,6 +72,58 @@ def create_package(package_name, repo_url=None, default=False):
         with open(str(modrc_file), 'w') as mf:
             yaml.safe_dump(modrc_yaml, mf, default_flow_style=False)
     return new_package_dir
+
+def install_package(repo_url, default=False):
+    """Install a new ModRC package.
+
+    Parameters
+    ----------
+    repo_url : str
+        The URL of the packages repository.
+    default : boolean
+        Whether the package should be set as the new default.
+
+    Raises
+    ------
+    ModRCIntegrityError
+        Raised if either the ModRC or packages directory do not exist.
+    ModRCPackageExistsError
+        Raised if the package already exists.
+    ModRCGitError
+        Raised if the package name could not be inferred from the repo URL.
+    """
+    # TODO: validate repo url #52
+    # parse package name from repo url
+    name_search = re.search(r'([^\/]+)\.git', repo_url)
+    if name_search is not None:
+        package_name = name_search.group(1)
+    else:
+        raise exceptions.ModRCGitError("Package name could not be inferred from repo URL.")
+    # get the packges directory
+    packages_dir = helper.get_packages_dir()
+    # define the package directories and files
+    package_dir = packages_dir.joinpath(package_name)
+    # raise a ModRCPackageExistsError if the package is already installed
+    if package_dir.exists():
+        raise exceptions.ModRCPackageExistsError("Package is already installed")
+    # clone the repo
+    package_dir.mkdir()
+    git.Repo.clone_from(repo_url, str(package_dir))
+    # check if the repo is a valid package
+    if not package_dir.joinpath('package.yml').is_file():
+        package_dir.rmdir()
+        raise exceptions.ModRCPackageDoesNotExistError("Cloned repo is not a valid package")
+    # set the package as the default package
+    if default:
+        modrc_file = helper.get_modrc_file()
+        with open(str(modrc_file), 'r') as mf:
+            modrc_yaml = yaml.safe_load(mf)
+            if modrc_yaml is None:
+                modrc_yaml = {}
+        modrc_yaml['defaultpackage'] = package_name
+        with open(str(modrc_file), 'w') as mf:
+            yaml.safe_dump(modrc_yaml, mf, default_flow_style=False)
+    return package_dir
 
 def get_package(package_name):
     """Get a package by name.

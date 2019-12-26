@@ -82,6 +82,59 @@ class TestCreatePackage(unittest.TestCase):
         self.assertEqual(repo.remotes.origin.url, 'git@github.com:test/test.git')
 
 
+class TestInstallPackage(unittest.TestCase):
+    def setUp(self):
+        # setup a temporary mock home directory
+        self.temp = tempfile.TemporaryDirectory()
+        self.temp_dir = pathlib.Path(self.temp.name)
+        setup.initial_setup(self.temp_dir)
+        setup.populate_modrc_file(editor='vim', auto_compile=True, auto_sync=True)
+        self.packages_dir = helper.get_packages_dir()
+
+    def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown(ignore_errors=True)
+        # destroy the temp directory
+        self.temp.cleanup()
+
+    def test_package_already_exists(self):
+        """Test that an excpetion is raised if the package already exists."""
+        package.create_package('test-package')
+        with self.assertRaises(exceptions.ModRCPackageExistsError):
+            package.install_package('git@github.com:test/test-package.git')
+
+    def test_clone_repo(self):
+        """Test that the clones successfully."""
+        with unittest.mock.patch('modrc.lib.package.git.Repo.clone_from') as clone:
+            def side_effect(url, clone_dir):
+                helper.get_packages_dir().joinpath('test-package/package.yml').touch()
+            clone.side_effect = side_effect
+            package_dir = package.install_package('git@github.com:test/test-package.git')
+        clone.assert_called_once_with('git@github.com:test/test-package.git', str(helper.get_packages_dir().joinpath('test-package')))
+        self.assertEqual(package_dir, self.packages_dir.joinpath('test-package'))
+        self.assertTrue(package_dir.is_dir())
+
+    def test_package_yaml_does_not_exist(self):
+        """Test that the package is not installed if it does not have a packge.yml file."""
+        with unittest.mock.patch('modrc.lib.package.git.Repo.clone_from'):
+            with self.assertRaises(exceptions.ModRCPackageDoesNotExistError):
+                package.install_package('git@github.com:test/test-package.git')
+        self.assertFalse(helper.get_packages_dir().joinpath('test-package').exists())
+
+    def test_set_default(self):
+        """Test that the package is set as the default in the modrc.yml file."""
+        with unittest.mock.patch('modrc.lib.package.git.Repo.clone_from') as clone:
+            def side_effect(url, clone_dir):
+                helper.get_packages_dir().joinpath('test-package/package.yml').touch()
+            clone.side_effect = side_effect
+            package.install_package('git@github.com:test/test-package.git', default=True)
+        modrc_file = helper.get_modrc_file()
+        with open(str(modrc_file), 'r') as mf:
+            modrc_yaml = yaml.safe_load(mf)
+        self.assertIn('defaultpackage', modrc_yaml)
+        self.assertEqual(modrc_yaml['defaultpackage'], 'test-package')
+
+
 class TestGetPackage(unittest.TestCase):
     def setUp(self):
         # setup a temporary mock home directory
