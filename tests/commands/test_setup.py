@@ -36,29 +36,36 @@ class TestInstallNonInteractive:
             result = click_runner.invoke(__main__.main, ['setup', 'install', '--ni'])
         populate_modrc_file.assert_called_once_with(None, 'vim', False, False)
         assert not create_package.called
-        # TODO: setup command URL clone option #44
         assert result.exit_code == 0
-
-    # TODO: setup command URL clone option #44
 
     @pytest.mark.usefixtures('teardown')
     @pytest.mark.usefixtures('click_runner')
     def test_url_and_name_option(self, click_runner):
         """Test that a package is created with the proper name and has the proper repo URL."""
-        with mock.patch('modrc.lib.package.create_package') as create_package:
+        with mock.patch('modrc.lib.package.create_package') as create_package, mock.patch('modrc.lib.package.install_package') as install_package:
             result = click_runner.invoke(__main__.main, ['setup', 'install', '--ni', '--name', 'test-package', '--url', 'http://example.com'])
-        create_package.assert_called_once_with('test-package', repo_url='http://example.com')
-        # TODO: setup command URL clone option #44
+        create_package.assert_called_once_with('test-package', repo_url='http://example.com', default=True)
+        assert not install_package.called
         assert result.exit_code == 0
 
     @pytest.mark.usefixtures('teardown')
     @pytest.mark.usefixtures('click_runner')
     def test_name_option(self, click_runner):
         """Test that a package is created with the proper name."""
-        with mock.patch('modrc.lib.package.create_package') as create_package:
+        with mock.patch('modrc.lib.package.create_package') as create_package, mock.patch('modrc.lib.package.install_package') as install_package:
             result = click_runner.invoke(__main__.main, ['setup', 'install', '--ni', '--name', 'test-package'])
-        create_package.assert_called_once_with('test-package', repo_url=None)
-        # TODO: setup command URL clone option #44
+        create_package.assert_called_once_with('test-package', repo_url=None, default=True)
+        assert not install_package.called
+        assert result.exit_code == 0
+
+    @pytest.mark.usefixtures('teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_url_option(self, click_runner):
+        """Test that a package is cloned if the url option is given."""
+        with mock.patch('modrc.lib.package.create_package') as create_package, mock.patch('modrc.lib.package.install_package') as install_package:
+            result = click_runner.invoke(__main__.main, ['setup', 'install', '--ni', '--url', 'http://example.com'])
+        install_package.assert_called_once_with('http://example.com', default=True)
+        assert not create_package.called
         assert result.exit_code == 0
 
     @pytest.mark.usefixtures('teardown')

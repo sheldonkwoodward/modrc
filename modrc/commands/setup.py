@@ -46,11 +46,10 @@ def install(non_interactive, repo_url, package_name, editor, auto_compile, auto_
     modrc_setup.populate_modrc_file(package_name, editor, auto_compile, auto_sync)
     # create a new package
     if package_name is not None:
-        modrc_package.create_package(package_name, repo_url=repo_url)
+        modrc_package.create_package(package_name, repo_url=repo_url, default=True)
     # clone an existing package
     elif repo_url is not None:
-        # TODO: setup command URL clone option #44
-        pass
+        modrc_package.install_package(repo_url, default=True)
 
     # react to the outcome of the installation
     click.echo('ModRC successfully installed at ~/.modrc')

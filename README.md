@@ -46,7 +46,7 @@ modrc compile [--package <package> [--file <file>]]
 ### Package
 ```
 modrc package add [(-d | --default)] [--url <url>] <package>
-modrc package install <url>
+modrc package install [(-d | --default)] <url>
 modrc package remove [-y] <package>
 modrc package edit [<package>]
 modrc package default <package>
