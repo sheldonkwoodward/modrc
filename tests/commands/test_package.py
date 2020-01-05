@@ -117,3 +117,32 @@ class TestInstallNonInteractive:
             result = click_runner.invoke(__main__.main, ['package', 'install', 'git@github.com:test/test-package.git'])
         install_package.assert_called_once_with('git@github.com:test/test-package.git', default=False)
         assert result.exit_code == 0
+
+
+class TestDefault:
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_modrc_not_installed(self, click_runner):
+        """Test that a warning is shown if ModRC is not installed."""
+        with mock.patch('modrc.lib.package.set_default', side_effect=exceptions.ModRCIntegrityError()) as set_default:
+            result = click_runner.invoke(__main__.main, ['package', 'default', 'test-package'])
+        set_default.assert_called_once_with('test-package')
+        assert result.exit_code == 2
+
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_package_does_not_exist(self, click_runner):
+        """Test that a warning is shown if the package does not exist."""
+        with mock.patch('modrc.lib.package.set_default', side_effect=exceptions.ModRCPackageDoesNotExistError()) as set_default:
+            result = click_runner.invoke(__main__.main, ['package', 'default', 'test-package'])
+        set_default.assert_called_once_with('test-package')
+        assert result.exit_code == 2
+
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_set_default(self, click_runner):
+        """Test that the package is set as the default package."""
+        with mock.patch('modrc.lib.package.set_default') as set_default:
+            result = click_runner.invoke(__main__.main, ['package', 'default', 'test-package'])
+        set_default.assert_called_once_with('test-package')
+        assert result.exit_code == 0

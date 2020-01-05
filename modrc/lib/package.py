@@ -63,14 +63,7 @@ def create_package(package_name, repo_url=None, default=False):
     repo.index.commit('{} package initialization.'.format(package_name))
     # set the package as default in modrc.yml
     if default:
-        modrc_file = helper.get_modrc_file()
-        with open(str(modrc_file), 'r') as mf:
-            modrc_yaml = yaml.safe_load(mf)
-            if modrc_yaml is None:
-                modrc_yaml = {}
-        modrc_yaml['defaultpackage'] = package_name
-        with open(str(modrc_file), 'w') as mf:
-            yaml.safe_dump(modrc_yaml, mf, default_flow_style=False)
+        set_default(package_name)
     return new_package_dir
 
 def install_package(repo_url, default=False):
@@ -115,14 +108,7 @@ def install_package(repo_url, default=False):
         raise exceptions.ModRCPackageDoesNotExistError("Cloned repo is not a valid package")
     # set the package as the default package
     if default:
-        modrc_file = helper.get_modrc_file()
-        with open(str(modrc_file), 'r') as mf:
-            modrc_yaml = yaml.safe_load(mf)
-            if modrc_yaml is None:
-                modrc_yaml = {}
-        modrc_yaml['defaultpackage'] = package_name
-        with open(str(modrc_file), 'w') as mf:
-            yaml.safe_dump(modrc_yaml, mf, default_flow_style=False)
+        set_default(package_name)
     return package_dir
 
 def get_package(package_name):

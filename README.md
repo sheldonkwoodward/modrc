@@ -51,6 +51,7 @@ modrc package remove [-y] <package>
 modrc package edit [<package>]
 modrc package default <package>
 modrc package sync [--all] [<package>]
+modrc package list
 ```
 
 ### File

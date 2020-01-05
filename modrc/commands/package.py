@@ -43,3 +43,17 @@ def install(url, default):
         click.secho('Package name could not be inferred, check your URL', fg='red', bold=True)
         sys.exit(2)
     click.echo("Package {} has been installed".format(url))
+
+@package.command()
+@click.argument('name')
+def default(name):
+    """Set a package as the default package."""
+    try:
+        modrc_package.set_default(name)
+    except exceptions.ModRCIntegrityError:
+        click.secho('ModRC is not installed', fg='red', bold=True)
+        sys.exit(2)
+    except exceptions.ModRCPackageDoesNotExistError:
+        click.secho('Package {} is not installed exists'.format(name), fg='red', bold=True)
+        sys.exit(2)
+    click.echo("Package {} has been set as default".format(name))
