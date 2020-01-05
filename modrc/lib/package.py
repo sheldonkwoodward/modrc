@@ -157,7 +157,7 @@ def get_package_file(package_name):
     Parameters
     ----------
     package_name : str
-        The name of the package to the package.yml file from.
+        The name of the package to get the package.yml file from.
 
     Returns
     -------
@@ -176,3 +176,30 @@ def get_package_file(package_name):
     if not package_file.is_file():
         raise exceptions.ModRCPackageDoesNotExistError
     return package_file
+
+def set_default(package_name):
+    """Set a package as the default package.
+
+    Parameters
+    ----------
+    package_name : str
+        The name of the package to set as default.
+
+    Raises
+    ------
+    ModRCIntegrityError
+        Raised if the packages directory does not exist.
+    ModRCPackageDoesNotExistError
+        Raised if the package or package.yml file does not exist.
+    """
+    # verify the package exists
+    get_package_file(package_name)
+    # set the package as default
+    modrc_file = helper.get_modrc_file()
+    with open(str(modrc_file), 'r') as mf:
+        modrc_yaml = yaml.safe_load(mf)
+        if modrc_yaml is None:
+            modrc_yaml = {}
+    modrc_yaml['defaultpackage'] = package_name
+    with open(str(modrc_file), 'w') as mf:
+        yaml.safe_dump(modrc_yaml, mf, default_flow_style=False)

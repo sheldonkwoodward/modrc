@@ -190,3 +190,33 @@ class TestGetPackageFile(unittest.TestCase):
         package_file = package.get_package_file('test-package')
         self.assertEqual(package_dir.joinpath('package.yml'), package_file)
         self.assertTrue(package_file.is_file())
+
+
+class TestSetDefault(unittest.TestCase):
+    def setUp(self):
+        # setup a temporary mock home directory
+        self.temp = tempfile.TemporaryDirectory()
+        self.temp_dir = pathlib.Path(self.temp.name)
+        setup.initial_setup(self.temp_dir)
+        setup.populate_modrc_file()
+
+    def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown(ignore_errors=True)
+        # destroy the temp directory
+        self.temp.cleanup()
+
+    def test_package_does_not_exist(self):
+        """Test functionality when the package does not exist."""
+        with self.assertRaises(exceptions.ModRCPackageDoesNotExistError):
+            package.set_default('test-package')
+
+    def test_set_default(self):
+        """Test that the package is set as the default in the modrc.yml file."""
+        package.create_package('test-package', default=False)
+        package.set_default('test-package')
+        modrc_file = helper.get_modrc_file()
+        with open(str(modrc_file), 'r') as mf:
+            modrc_yaml = yaml.safe_load(mf)
+        self.assertIn('defaultpackage', modrc_yaml)
+        self.assertEqual(modrc_yaml['defaultpackage'], 'test-package')
