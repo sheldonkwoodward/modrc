@@ -111,6 +111,22 @@ def install_package(repo_url, default=False):
         set_default(package_name)
     return package_dir
 
+def list_packages():
+    """List all installed packages.
+
+    Returns
+    -------
+    :obj:`list` of :obj:`str`
+        A list of all installed packages.
+
+    Raises
+    ------
+    ModRCIntegrityError
+        Raised if ModRC is not installed.
+    """
+    packages_dir = helper.get_packages_dir()
+    return [p.name for p in packages_dir.iterdir() if p.is_dir()]
+
 def get_package(package_name):
     """Get a package by name.
 

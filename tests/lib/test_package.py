@@ -135,6 +135,32 @@ class TestInstallPackage(unittest.TestCase):
         self.assertEqual(modrc_yaml['defaultpackage'], 'test-package')
 
 
+class TestListPackages(unittest.TestCase):
+    def setUp(self):
+        # setup a temporary mock home directory
+        self.temp = tempfile.TemporaryDirectory()
+        self.temp_dir = pathlib.Path(self.temp.name)
+        setup.initial_setup(self.temp_dir)
+
+    def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown(ignore_errors=True)
+        # destroy the temp directory
+        self.temp.cleanup()
+
+    def test_no_packages_installed(self):
+        """Test that an empty list is returned if no packages are installed."""
+        self.assertEqual(package.list_packages(), [])
+
+    def test_multiple_packages_installed(self):
+        """Test that all installed package names are returned in a list."""
+        package.create_package('test-package-1')
+        package.create_package('test-package-2')
+        packages = package.list_packages()
+        self.assertIn('test-package-1', packages)
+        self.assertIn('test-package-2', packages)
+
+
 class TestGetPackage(unittest.TestCase):
     def setUp(self):
         # setup a temporary mock home directory
