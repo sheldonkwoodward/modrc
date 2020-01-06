@@ -54,6 +54,21 @@ def default(name):
         click.secho('ModRC is not installed', fg='red', bold=True)
         sys.exit(2)
     except exceptions.ModRCPackageDoesNotExistError:
-        click.secho('Package {} is not installed exists'.format(name), fg='red', bold=True)
+        click.secho('Package {} does not exist'.format(name), fg='red', bold=True)
         sys.exit(2)
     click.echo("Package {} has been set as default".format(name))
+
+@package.command(name='list')
+def list_command():
+    """List all installed packages."""
+    # get all the installed packages
+    try:
+        packages = modrc_package.list_packages()
+    except exceptions.ModRCIntegrityError:
+        click.secho('ModRC is not installed', fg='red', bold=True)
+        sys.exit(2)
+    # print the packages to stdout
+    click.echo('Packages')
+    click.echo('--------')
+    for p in packages:
+        click.echo(p)

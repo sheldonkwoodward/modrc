@@ -146,3 +146,25 @@ class TestDefault:
             result = click_runner.invoke(__main__.main, ['package', 'default', 'test-package'])
         set_default.assert_called_once_with('test-package')
         assert result.exit_code == 0
+
+
+class TestList:
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_modrc_not_installed(self, click_runner):
+        """Test that a warning is shown if ModRC is not installed."""
+        with mock.patch('modrc.lib.package.list_packages', side_effect=exceptions.ModRCIntegrityError()) as list_packages:
+            result = click_runner.invoke(__main__.main, ['package', 'list'])
+        list_packages.assert_called_once_with()
+        assert result.exit_code == 2
+
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_list_packages(self, click_runner):
+        """Test that packages are listed."""
+        with mock.patch('modrc.lib.package.list_packages', return_value=['test1', 'test2']) as list_packages:
+            result = click_runner.invoke(__main__.main, ['package', 'list'])
+        list_packages.assert_called_once_with()
+        assert 'test1' in result.output
+        assert 'test2' in result.output
+        assert result.exit_code == 0
