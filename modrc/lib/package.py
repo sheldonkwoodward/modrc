@@ -1,4 +1,5 @@
 import re
+import shutil
 import yaml
 
 import git
@@ -205,3 +206,21 @@ def set_default(package_name):
     modrc_yaml['defaultpackage'] = package_name
     with open(str(modrc_file), 'w') as mf:
         yaml.safe_dump(modrc_yaml, mf, default_flow_style=False)
+
+def remove_package(package_name):
+    """Removes an installed package.
+
+    Parameters
+    ----------
+    package_name : str
+        The name of the package to be removed.
+
+    Raises
+    ------
+    ModRCIntegrityError
+        Raised if the packages directory does not exist.
+    ModRCPackageDoesNotExistError
+        Raised if the package or package.yml file does not exist.
+    """
+    package_dir = get_package(package_name)
+    shutil.rmtree(str(package_dir))

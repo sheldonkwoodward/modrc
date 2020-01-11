@@ -246,3 +246,30 @@ class TestSetDefault(unittest.TestCase):
             modrc_yaml = yaml.safe_load(mf)
         self.assertIn('defaultpackage', modrc_yaml)
         self.assertEqual(modrc_yaml['defaultpackage'], 'test-package')
+
+
+class TestRemovePackage(unittest.TestCase):
+    def setUp(self):
+        # setup a temporary mock home directory
+        self.temp = tempfile.TemporaryDirectory()
+        self.temp_dir = pathlib.Path(self.temp.name)
+        setup.initial_setup(self.temp_dir)
+        setup.populate_modrc_file()
+
+    def tearDown(self):
+        # destroy the ModRC symlink
+        setup.teardown(ignore_errors=True)
+        # destroy the temp directory
+        self.temp.cleanup()
+
+    def test_package_does_not_exist(self):
+        """Test functionality when the package does not exist."""
+        with self.assertRaises(exceptions.ModRCPackageDoesNotExistError):
+            package.remove_package('test-package')
+
+    def test_remove_package(self):
+        """Test that a package is successfully removed."""
+        package.create_package('test-package')
+        package_dir = package.get_package('test-package')
+        package.remove_package('test-package')
+        self.assertFalse(package_dir.exists())
