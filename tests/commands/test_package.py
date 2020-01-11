@@ -168,3 +168,32 @@ class TestList:
         assert 'test1' in result.output
         assert 'test2' in result.output
         assert result.exit_code == 0
+
+
+class TestRemove:
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_modrc_not_installed(self, click_runner):
+        """Test that a warning is shown if ModRC is not installed."""
+        with mock.patch('modrc.lib.package.remove_package', side_effect=exceptions.ModRCIntegrityError()) as remove_package:
+            result = click_runner.invoke(__main__.main, ['package', 'remove', 'test-package'])
+        remove_package.assert_called_once_with('test-package')
+        assert result.exit_code == 2
+
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_package_not_installed(self, click_runner):
+        """Test that a warning is shown if the package is not installed."""
+        with mock.patch('modrc.lib.package.remove_package', side_effect=exceptions.ModRCPackageDoesNotExistError()) as remove_package:
+            result = click_runner.invoke(__main__.main, ['package', 'remove', 'test-package'])
+        remove_package.assert_called_once_with('test-package')
+        assert result.exit_code == 2
+
+    @pytest.mark.usefixtures('setup_teardown')
+    @pytest.mark.usefixtures('click_runner')
+    def test_package_removed(self, click_runner):
+        """Test that a package is successfully removed."""
+        with mock.patch('modrc.lib.package.remove_package') as remove_package:
+            result = click_runner.invoke(__main__.main, ['package', 'remove', 'test-package'])
+        remove_package.assert_called_once_with('test-package')
+        assert result.exit_code == 0

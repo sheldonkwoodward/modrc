@@ -72,3 +72,17 @@ def list_command():
     click.echo('--------')
     for p in packages:
         click.echo(p)
+
+@package.command()
+@click.argument('name')
+def remove(name):
+    """Remove a package."""
+    try:
+        modrc_package.remove_package(name)
+    except exceptions.ModRCIntegrityError:
+        click.secho('ModRC is not installed', fg='red', bold=True)
+        sys.exit(2)
+    except exceptions.ModRCPackageDoesNotExistError:
+        click.secho('Package {} does not exist'.format(name), fg='red', bold=True)
+        sys.exit(2)
+    click.echo("Package {} has been removed".format(name))
